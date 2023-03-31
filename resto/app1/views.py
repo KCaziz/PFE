@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.core.mail import send_mail, EmailMessage
 from django.template.loader import render_to_string
@@ -13,7 +13,7 @@ from .token import generatorToken
 
 # Create your views here.
 def home(request):
-    return render(request, 'app1/index.html')
+    return render(request, 'app1/acceuil.html')
 
 def register(request):
     if request.method == "POST" :
@@ -40,6 +40,8 @@ def register(request):
         mon_utilisateur.first_name = firstname
         mon_utilisateur.last_name  =lastname
         mon_utilisateur.is_active = False
+        client_group = Group.objects.get(name='Client')
+        client_group.user_set.add(mon_utilisateur)
         mon_utilisateur.save()
 
         #envoie d'email de bienvenue
@@ -104,7 +106,7 @@ def activate(request, uidb64, token):
         user = None
     
     if user is not None and generatorToken.check_token(user, token):
-        user.is_active  =True
+        user.is_active = True
         user.save()
         messages.success(request, "Votre compte a bien été activer Felicitation !!! connectez vous maintenant")
         return redirect('login')
