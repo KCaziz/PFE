@@ -9,6 +9,8 @@ from restaurent import settings
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_bytes, force_text
 from django.contrib.auth import authenticate, login, logout
+
+from .models import Restaurateur
 from .token import generatorToken
 
 # Create your views here.
@@ -73,6 +75,85 @@ def register(request):
         email.send()
         return redirect('login')
     
+    return render(request, 'app1/register.html')
+
+def registerRestaurateur(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        firstname = request.POST['firstname']
+        lastname = request.POST['lastname']
+        email = request.POST['email']
+        password = request.POST['password']
+        password1 = request.POST['password1']
+        resto_name = request.POST['resto_name']
+        phone_number = request.POST['phone_number']
+        resto_email_address = request.POST['email_address']
+
+        # Vérifier si le nom d'utilisateur ou l'adresse e-mail existe déjà
+        if User.objects.filter(username=username):
+            messages.error(request, "ce nom a été déja pris")
+            return redirect('register')
+        if User.objects.filter(email=email):
+            messages.error(request, "cette email a déja un compte")
+            return redirect('register')
+
+        # Vérifier que le nom d'utilisateur est alphanumérique
+        if not username.isalnum():
+            messages.error(request, 'le nom doit être alphanumérique')
+            return redirect('register')
+
+        # Vérifier que les mots de passe correspondent
+        if password != password1 :
+            messages.error(request, 'les deux password ne coincident pas')
+            return redirect('register')
+
+        # Créer un utilisateur
+        new_user = User.objects.create_user(username, email, password)
+        new_user.first_name = firstname
+        new_user.last_name = lastname
+        new_user.is_active = False
+        client_group = Group.objects.get(name='Restaurateur')
+        client_group.user_set.add(new_user)
+        new_user.save()
+
+        # Créer un restaurateur associé à l'utilisateur
+        if Restaurateur.objects.filter(email_address=resto_email_address):
+            messages.error(request, "cette email a déjà un compte")
+            return redirect('register')
+
+        new_restaurateur = Restaurateur(resto_name=resto_name, phone_number=phone_number, email_address=resto_email_address)
+        new_restaurateur.user = new_user
+        new_restaurateur.save()
+
+        # Envoyer un e-mail de bienvenue
+        messages.success(request, 'Votre compte a été créé avec succès')
+        subject ="Bienvenue dans notre app"
+        message = "Bienvenue "+ new_user.first_name + " " + new_user.last_name + " \n nous sommes heureux de vous compter parmi nous \n\n\n Merci \n\n Equipe de app" 
+        from_email = settings.EMAIL_HOST_USER
+        to_list = [new_user.email]
+        send_mail(subject, message, from_email, to_list, fail_silently=False)
+
+        # Envoyer un e-mail de confirmation
+        current_site = get_current_site(request)
+        email_subject = "Confirmation de l'adresse email sur notre app"
+        messageConfirm = render_to_string("emailconfirm.html", {
+            'name': new_user.first_name,
+            'domain': current_site.domain,
+            'uid' : urlsafe_base64_encode(force_bytes(new_user.pk)),
+            'token': generatorToken.make_token(new_user)
+        })
+
+        email = EmailMessage(
+            email_subject,
+            messageConfirm,
+            settings.EMAIL_HOST_USER,
+            [new_user.email]
+        )
+
+        email.fail_silently = False
+        email.send()
+        return redirect('login')
+
     return render(request, 'app1/register.html')
 
 def logIn(request):
