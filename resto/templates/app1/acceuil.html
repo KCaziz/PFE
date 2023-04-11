@@ -24,16 +24,16 @@
 					<a class="nav-link" href="#">Réserver</a>
 				</li>
 				{% if user.is_authenticated %}
-				
+				{% if user.groups.all.0 == 'Client' %}
 				<li class="nav-item">
-					<a class="nav-link" href="#">Mes commandes</a>
+					<a class="nav-link" href="#">Mon Panier</a>
 				</li>
-				
-				
+				{% endif %}
+				{% if user.groups.all.0 == 'Restaurateur' %}
 				<li class="nav-item">
 					<a class="nav-link" href="#">Mes réservations</a>
 				</li>
-				
+				{% endif %}
 				{% endif %}
 			</ul>
 			<ul class="navbar-nav ml-auto">
@@ -59,6 +59,18 @@
 	<div class="container mt-5">
 		<h1>Bienvenue sur mon site de commande de restaurant</h1>
 		<p>Vous pouvez commander, réserver et gérer vos commandes ou réservations en toute simplicité.</p>
+	</div>
+	<div>
+		{% if user.groups.all.0 == 'Client' %}
+		{% for product in products %}
+		<h2>{{ product.name }}</h2>
+		<img src="{{product.thumbnail.url }}" alt="{{product.name}}">
+		{% endfor %}
+		{% endif %}
+
+		{% if user.groups.all.0 == 'Restaurateur' %}
+		<a href="#">ajouter un produit</a>
+		{% endif %}
 	</div>
 
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
