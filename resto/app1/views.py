@@ -92,20 +92,20 @@ def registerRestaurateur(request):
         # Vérifier si le nom d'utilisateur ou l'adresse e-mail existe déjà
         if User.objects.filter(username=username):
             messages.error(request, "ce nom a été déja pris")
-            return redirect('register')
+            return redirect('register_restaurateur')
         if User.objects.filter(email=email):
             messages.error(request, "cette email a déja un compte")
-            return redirect('register')
+            return redirect('register_restaurateur')
 
         # Vérifier que le nom d'utilisateur est alphanumérique
         if not username.isalnum():
             messages.error(request, 'le nom doit être alphanumérique')
-            return redirect('register')
+            return redirect('register_restaurateur')
 
         # Vérifier que les mots de passe correspondent
         if password != password1 :
             messages.error(request, 'les deux password ne coincident pas')
-            return redirect('register')
+            return redirect('register_restaurateur')
 
         # Créer un utilisateur
         new_user = User.objects.create_user(username, email, password)
@@ -119,7 +119,7 @@ def registerRestaurateur(request):
         # Créer un restaurateur associé à l'utilisateur
         if Restaurateur.objects.filter(email_address=resto_email_address):
             messages.error(request, "cette email a déjà un compte")
-            return redirect('register')
+            return redirect('register_restaurateur')
 
         new_restaurateur = Restaurateur(resto_name=resto_name, phone_number=phone_number, email_address=resto_email_address)
         new_restaurateur.user = new_user
@@ -154,7 +154,7 @@ def registerRestaurateur(request):
         email.send()
         return redirect('login')
 
-    return render(request, 'app1/register.html')
+    return render(request, 'app1/register_restaurateur.html')
 
 def logIn(request):
     if request.method == "POST" :

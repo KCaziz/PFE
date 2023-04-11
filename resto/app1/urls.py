@@ -3,7 +3,7 @@ from app1 import views
 urlpatterns = [
     path('', views.home, name='home'),
     path('register/client', views.register, name='registerClient'),
-    path('register/restaurateur', views.registerRestaurateur, name='registerRestaurateur'),
+    path('register/restaurateur', views.registerRestaurateur, name='register_restaurateur'),
     path('login', views.logIn, name='login'),
     path('logout', views.logOut, name='logout'),
     path('activate/<uidb64>/<token>', views.activate, name='activate'),

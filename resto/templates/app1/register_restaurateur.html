@@ -11,7 +11,7 @@
 
 {% endfor %}
 
-<form method="post" action="/register/restaurateur">
+<form method="post" action="{% url 'register_restaurateur' %}">
     {% csrf_token %}
     <label for="username">username</label>
     <input type="text" name="username" id="username" placeholder="Enter Your Username" required>
