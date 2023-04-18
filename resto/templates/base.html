@@ -4,8 +4,85 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>authentification</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+	<style>
+		html{
+			height: 100%;
+		}
+		body {
+			background-size: cover;
+			background-repeat: no-repeat;
+			background-position: center center;
+			height: 100%;
+		}
+	</style>
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<a class="navbar-brand" href="#">Mon site de commande de restaurant</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav">
+				<li class="nav-item active">
+					<a class="nav-link" href="#">Accueil</a>
+				</li>
+				
+				{% if user.is_authenticated %}
+				{% if user.groups.all.0 == 'Client' %}
+                <li class="nav-item">
+					<a class="nav-link" href="#">Commander</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#">Réserver</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#">Mon Panier</a>
+				</li>
+				{% endif %}
+				{% if user.groups.all.0 == 'Restaurateur' %}
+				<li class="nav-item">
+					<a class="nav-link" href="#">Mes réservations</a>
+				</li>
+				{% endif %}
+				{% endif %}
+			</ul>
+			<ul class="navbar-nav ml-auto">
+
+
+				{% if user.is_authenticated %}
+
+
+
+				<li class="nav-item">
+					<a class="nav-link" href="#">Profil</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{% url 'logout' %}">Déconnexion</a>
+				</li>
+
+
+
+				{% else %}
+
+
+
+				<li class="nav-item">
+					<a class="nav-link" href="{% url 'login' %}">Connexion</a>
+				</li>
+				
+				<li class="nav-item">
+					<a class="nav-link" href="{% url 'registerClient' %}">Inscription</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="{% url 'register_restaurateur' %}">As restaurateur</a>
+				</li>
+				{% endif %}
+			</ul>
+		</div>
+	</nav>
+
     <center>
         <h2>Systeme d'authentification restaurent</h2>
     

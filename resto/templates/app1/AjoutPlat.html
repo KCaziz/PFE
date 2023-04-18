@@ -1,0 +1,24 @@
+<html lang="en">
+    {%load static%}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajout Plat</title>
+    <link rel="stylesheet" href="">
+</head>
+<body>
+    <H1>Ajout Plat</H1>
+    <br>
+    <p>{{message}}</p>
+    <form method="post" action="" class="ajout-Plat">
+        {%csrf_token%}
+        {{form.as_p}}
+        <a href="{%url 'AjoutPlat'%}">Annuler</a>
+        <input type="submit", value="Ajout">
+        <a href="{%url 'home'%}">Accueil</a>
+
+    </form>
+    
+</body>
+</html>
