@@ -198,7 +198,7 @@ def activate(request, uidb64, token):
         return redirect('home')
 
 
-def AjoutPlat(request):
+def ajout_produit(request):
     if request.method == 'POST':
         form = ProduitForm(request.POST)
         if form.is_valid():
@@ -207,11 +207,11 @@ def AjoutPlat(request):
             msg = "Type ajouter, vous pouvez ajouter un autre"
         else : 
             msg = "Remplissez tous les champs"
-        return render(request, "app1/AjoutPlat.html", {"form": form, "message": msg})
+        return render(request, "app1/ajout_produit.html", {"form": form, "message": msg})
     else :
         form = ProduitForm()
         msg = "Remplissez tous les champs"
-        return render(request, "app1/AjoutPlat.html", {"form":form, "message":msg})
+        return render(request, "app1/ajout_produit.html", {"form":form, "message":msg})
 
 def add_to_cart(request, slug):
     user = request.user
