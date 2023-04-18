@@ -219,6 +219,7 @@ def add_to_cart(request, slug):
     cart, _ = Cart.objects.get_or_create(user=user)
     # ici le _ correspond a une 2 eme variable car la func get_or_create retourne 2 chose 1 le cart et 2 l'information si le cart a ete cree ou non
     order, created = Order.objects.get_or_create(user=user,
+                                                 ordered = False,
                                                  product=product
                                                  )
     if created:
@@ -233,3 +234,9 @@ def add_to_cart(request, slug):
 def cart(request):
     cart = get_object_or_404(Cart, user=request.user)
     return render(request, 'app1/cart.html', {'orders': cart.orders.all()})
+
+def delete_cart(request):
+    if cart := request.user.cart:
+        cart.delete()
+    return redirect('home')
+
