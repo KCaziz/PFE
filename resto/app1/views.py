@@ -240,3 +240,8 @@ def delete_cart(request):
         cart.delete()
     return redirect('home')
 
+def commande(request):
+    user = request.user
+    if cart : 
+        user.cart.delete()
+    return redirect('home')

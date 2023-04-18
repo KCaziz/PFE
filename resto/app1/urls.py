@@ -10,5 +10,5 @@ urlpatterns = [
     path('cart/', views.cart, name="cart"),
     path('activate/<uidb64>/<token>', views.activate, name='activate'),
     path('ajout_produit', views.ajout_produit, name='ajout_produit'),
-    # path('cart/commande', views.commande, name='commande'),
+    path('cart/commande', views.commande, name='commande'),
     ]
