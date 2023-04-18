@@ -1,22 +1,24 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponse
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.core.mail import send_mail, EmailMessage
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse
 from restaurent import settings
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_bytes, force_text
 from django.contrib.auth import authenticate, login, logout
 
-from .models import Restaurateur
+from .models import Restaurateur, Product, Cart, Order
+from .forms import ProduitForm
 from .token import generatorToken
 
 # Create your views here.
 def home(request):
-    return render(request, 'app1/acceuil.html')
-
+    products = Product.objects.all()
+    return render(request, 'app1/acceuil.html', context={"products": products})
 def register(request):
     if request.method == "POST" :
         username = request.POST['username']
@@ -194,3 +196,47 @@ def activate(request, uidb64, token):
     else:
         messages.error(request, 'activation échoué !!!')
         return redirect('home')
+
+
+def ajout_produit(request):
+    if request.method == 'POST':
+        form = ProduitForm(request.POST)
+        if form.is_valid():
+            form.save()
+            form = ProduitForm()
+            msg = "Type ajouter, vous pouvez ajouter un autre"
+        else : 
+            msg = "Remplissez tous les champs"
+        return render(request, "app1/ajout_produit.html", {"form": form, "message": msg})
+    else :
+        form = ProduitForm()
+        msg = "Remplissez tous les champs"
+        return render(request, "app1/ajout_produit.html", {"form":form, "message":msg})
+
+def add_to_cart(request, slug):
+    user = request.user
+    product = get_object_or_404(Product, slug=slug)
+    cart, _ = Cart.objects.get_or_create(user=user)
+    # ici le _ correspond a une 2 eme variable car la func get_or_create retourne 2 chose 1 le cart et 2 l'information si le cart a ete cree ou non
+    order, created = Order.objects.get_or_create(user=user,
+                                                 ordered = False,
+                                                 product=product
+                                                 )
+    if created:
+        cart.orders.add(order)
+        cart.save()
+    else:
+        order.quantity +=1
+        order.save()
+    
+    return redirect('home')
+
+def cart(request):
+    cart = get_object_or_404(Cart, user=request.user)
+    return render(request, 'app1/cart.html', {'orders': cart.orders.all()})
+
+def delete_cart(request):
+    if cart := request.user.cart:
+        cart.delete()
+    return redirect('home')
+

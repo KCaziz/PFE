@@ -10,7 +10,6 @@
 			height: 100%;
 		}
 		body {
-			background-image: url('ressources/fond-acceuil.jpg');
 			background-size: cover;
 			background-repeat: no-repeat;
 			background-position: center center;
@@ -37,16 +36,19 @@
 					<a class="nav-link" href="#">Réserver</a>
 				</li>
 				{% if user.is_authenticated %}
-				{% if user.groups.all.0 == 'Client' %}
+				{% for group in user.groups.all %}
+
+        		{% if group.name == 'Client' %}
 				<li class="nav-item">
-					<a class="nav-link" href="#">Mon Panier</a>
+					<a class="nav-link" href="{% url 'cart' %}">Mon Panier</a>
 				</li>
 				{% endif %}
-				{% if user.groups.all.0 == 'Restaurateur' %}
+				{% if group.name == 'Restaurateur' %}
 				<li class="nav-item">
 					<a class="nav-link" href="#">Mes réservations</a>
 				</li>
 				{% endif %}
+				{% endfor %}
 				{% endif %}
 			</ul>
 			<ul class="navbar-nav ml-auto">
@@ -89,16 +91,37 @@
 		<p>Vous pouvez commander, réserver et gérer vos commandes ou réservations en toute simplicité.</p>
 	</div>
 	<div>
-		{% if user.groups.all.0 == 'Client' %}
-		{% for product in products %}
-		<h2>{{ product.name }}</h2>
-		<img src="{{product.thumbnail.url }}" alt="{{product.name}}">
-		{% endfor %}
-		{% endif %}
+		<center>
+		{% if user.is_authenticated %}
 
-		{% if user.groups.all.0 == 'Restaurateur' %}
-		<a href="#">ajouter un produit</a>
-		{% endif %}
+    {% for group in user.groups.all %}
+
+        {% if group.name == 'Client' %}
+            <div class="menu">
+                {% for product in products %}
+	        	<h5>{{ product.name }}</h5>
+				<h5>{{ product.description }}</h5>
+				{% if product.thumbnail %}
+                <img src="{{ product.thumbnail.url }}" alt="{{ product.name }} Thumbnail">
+           		{% endif %}
+				<br><br>
+				<p><a href="{% url 'add_to_cart' product.slug %}">ajouter dans le panier</a></p>		 
+				<br><br><br><br><br><br><br>       
+				{% endfor %}
+            </div>
+        {% endif %}
+
+        {% if group.name == 'Restaurateur' %}
+            <div class="menu">
+                <h1>Restaurateur</h1>
+				<a href="{% url 'AjoutPlat' %}">ajouter un produit</a>
+            </div>
+        {% endif %}
+
+    {% endfor %}
+
+    {% endif %}
+</center>
 	</div>
 
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
