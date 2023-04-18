@@ -36,16 +36,19 @@
 					<a class="nav-link" href="#">Réserver</a>
 				</li>
 				{% if user.is_authenticated %}
-				{% if user.groups.all.0 == 'Client' %}
+				{% for group in user.groups.all %}
+
+        		{% if group.name == 'Client' %}
 				<li class="nav-item">
-					<a class="nav-link" href="#">Mon Panier</a>
+					<a class="nav-link" href="{% url 'cart' %}">Mon Panier</a>
 				</li>
 				{% endif %}
-				{% if user.groups.all.0 == 'Restaurateur' %}
+				{% if group.name == 'Restaurateur' %}
 				<li class="nav-item">
 					<a class="nav-link" href="#">Mes réservations</a>
 				</li>
 				{% endif %}
+				{% endfor %}
 				{% endif %}
 			</ul>
 			<ul class="navbar-nav ml-auto">

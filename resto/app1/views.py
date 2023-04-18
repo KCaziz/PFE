@@ -230,3 +230,6 @@ def add_to_cart(request, slug):
     
     return redirect('home')
 
+def cart(request):
+    cart = get_object_or_404(Cart, user=request.user)
+    return render(request, 'app1/cart.html', {'orders': cart.orders.all()})
