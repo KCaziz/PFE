@@ -1,0 +1,40 @@
+<html lang="en">
+    {%load static%}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajout d'un Restaurant</title>
+    <link rel="stylesheet" href="">
+</head>
+<body>
+    <H1>Ajout d'un Restaurant</H1>
+    <br>
+    <form method="post" action="{% url 'ajout_restaurant' %}" >
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="name">Nom</label>
+          <input type="text" class="form-control" id="name" name="name">
+        </div>
+        <div class="form-group">
+            <label for="phone_resto">Téléphone</label>
+            <input type="tel" class="form-control" id="phone_resto" name="phone_resto">
+        </div>
+        <div class="form-group">
+            <label for="mail_address">Adresse email</label>
+            <input type="email" class="form-control" id="mail_address" name="mail_address">
+        </div>
+        <div class="form-group">
+          <label for="address">Adresse</label>
+          <input type="text" class="form-control" id="address" name="address" placeholder="une adresse approximative">
+        </div>
+        
+        <div class="form-group">
+            <label for="map_url">l'url Google Map de votre Restaurant (optionnel)</label>
+            <input type="text" class="form-control" id="map_url" name="map_url" placeholder="https://maps.app.goo.gl/...">
+          </div>
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+      </form>
+      
+</body>
+</html>

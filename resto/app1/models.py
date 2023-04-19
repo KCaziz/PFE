@@ -20,9 +20,18 @@ class Restaurateur(models.Model):
         on_delete=models.CASCADE,
         related_name='restaurateur'
     )
+    
+
+    def __str__(self):
+        return self.user.username
+    
+class Restaurant(models.Model):
+    proprietaire = models.ForeignKey('Restaurateur', on_delete=models.CASCADE, null=False, blank=True)
     resto_name = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=20)
-    email_address = models.EmailField(max_length=255, blank=True)
+    phone_resto = models.CharField(max_length=15)
+    mail_address = models.CharField(max_length=200)
+    address = models.CharField(max_length=200)
+    map_url = models.URLField(blank=True, null=True)
 
     def __str__(self):
         return self.resto_name

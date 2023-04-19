@@ -11,14 +11,22 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_bytes, force_text
 from django.contrib.auth import authenticate, login, logout
 
-from .models import Restaurateur, Product, Cart, Order
+from .models import Restaurateur, Product, Cart, Order, Restaurant
 from .forms import ProduitForm
 from .token import generatorToken
 
 # Create your views here.
+
 def home(request):
-    products = Product.objects.all()
-    return render(request, 'app1/acceuil.html', context={"products": products})
+    user = request.user
+    if user.groups.filter(name='Restaurateur').exists():
+        restos =  Restaurant.objects.filter(proprietaire__user = user)
+        return render(request, 'app1/acceuil.html', context={"restos": restos})
+    if user.groups.filter(name='Client').exists():
+        products = Product.objects.all()
+        return render(request, 'app1/acceuil.html', context={"products": products})
+    return render(request, 'app1/acceuil.html' )
+
 def register(request):
     if request.method == "POST" :
         username = request.POST['username']
@@ -87,9 +95,6 @@ def registerRestaurateur(request):
         email = request.POST['email']
         password = request.POST['password']
         password1 = request.POST['password1']
-        resto_name = request.POST['resto_name']
-        phone_number = request.POST['phone_number']
-        resto_email_address = request.POST['email_address']
 
         # Vérifier si le nom d'utilisateur ou l'adresse e-mail existe déjà
         if User.objects.filter(username=username):
@@ -119,11 +124,9 @@ def registerRestaurateur(request):
         new_user.save()
 
         # Créer un restaurateur associé à l'utilisateur
-        if Restaurateur.objects.filter(email_address=resto_email_address):
-            messages.error(request, "cette email a déjà un compte")
-            return redirect('register_restaurateur')
+        
 
-        new_restaurateur = Restaurateur(resto_name=resto_name, phone_number=phone_number, email_address=resto_email_address)
+        new_restaurateur = Restaurateur()
         new_restaurateur.user = new_user
         new_restaurateur.save()
 
@@ -245,3 +248,33 @@ def commande(request):
     if cart : 
         user.cart.delete()
     return redirect('home')
+
+######## Restaurant ######
+
+def ajout_restaurant(request):
+    if request.method == 'POST':
+         # Récupérer les données saisies par l'utilisateur
+        user = request.user
+        restaurateur = Restaurateur.objects.get(user = user)
+        
+        resto_name = request.POST['name']
+        phone_resto = request.POST['phone_resto']
+        mail_address = request.POST['mail_address']
+        address = request.POST['address']
+        map_url = request.POST['map_url']
+
+        # Créer une nouvelle instance de Restaurant avec les données saisies
+        restaurant = Restaurant(proprietaire = restaurateur, resto_name=resto_name, phone_resto = phone_resto, mail_address = mail_address, address = address, map_url=map_url)
+        restaurant.save()
+
+        # Rediriger l'utilisateur vers la page de détails du restaurant
+        # Espace restaurant va etre créé prochainement,
+        return redirect('home')
+    
+    return render(request, 'app1/ajout_restaurant.html')
+
+def espace_restaurant(request, pk):
+    resto = Restaurant.objects.get(id = pk)
+
+    #on recupère menu de resto ...
+

@@ -38,16 +38,16 @@
 				{% if user.is_authenticated %}
 				{% for group in user.groups.all %}
 
-        		{% if group.name == 'Client' %}
+        			{% if group.name == 'Client' %}
 				<li class="nav-item">
 					<a class="nav-link" href="{% url 'cart' %}">Mon Panier</a>
 				</li>
-				{% endif %}
-				{% if group.name == 'Restaurateur' %}
+					{% endif %}
+					{% if group.name == 'Restaurateur' %}
 				<li class="nav-item">
 					<a class="nav-link" href="#">Mes réservations</a>
 				</li>
-				{% endif %}
+					{% endif %}
 				{% endfor %}
 				{% endif %}
 			</ul>
@@ -112,10 +112,26 @@
         {% endif %}
 
         {% if group.name == 'Restaurateur' %}
-            <div class="menu">
-                <h1>Restaurateur</h1>
-				<a href="{% url 'AjoutPlat' %}">ajouter un produit</a>
-            </div>
+		<div>
+			{% if restos %}
+			<!-- le restaurateur a déjà inséré des restaurants -->
+			<h3>Choix du restaurant</h3>
+			<ul>
+				{% for resto in restos %}
+					<li>
+						<a href="{% url 'espace_restaurant' resto.id %}">{{ resto.resto_name }}</a>
+					</li>
+				{% endfor %}
+			</ul>
+			
+			
+			{%else%}
+			<!-- le restaurateur n'a pas déjà ... -->
+			<h3>Veillez ajouter un restaurant</h3>
+			{%endif%}
+
+			<a class="nav-link" href="{% url 'ajout_restaurant' %}">Ajouter Restaurant</a>
+		</div>
         {% endif %}
 
     {% endfor %}
