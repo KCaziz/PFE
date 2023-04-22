@@ -29,25 +29,23 @@
 				<li class="nav-item active">
 					<a class="nav-link" href="#">Accueil</a>
 				</li>
+				
+				{% if user.is_authenticated %}
+				{% for group in user.groups.all %}
+
+					{% if group.name == 'Client' %}
+
 				<li class="nav-item">
 					<a class="nav-link" href="#">Commander</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="#">Réserver</a>
 				</li>
-				{% if user.is_authenticated %}
-				{% for group in user.groups.all %}
-
-        			{% if group.name == 'Client' %}
 				<li class="nav-item">
 					<a class="nav-link" href="{% url 'cart' %}">Mon Panier</a>
 				</li>
 					{% endif %}
-					{% if group.name == 'Restaurateur' %}
-				<li class="nav-item">
-					<a class="nav-link" href="#">Mes réservations</a>
-				</li>
-					{% endif %}
+				
 				{% endfor %}
 				{% endif %}
 			</ul>

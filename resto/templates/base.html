@@ -44,9 +44,17 @@
 				</li>
 				{% endif %}
 				{% if group.name == 'Restaurateur' %}
+					{% if request.resolver_match.url_name == 'espace_restaurant' %}
 				<li class="nav-item">
-					<a class="nav-link" href="#">Mes réservations</a>
+					<a class="nav-link" href="#">Réservations<span><!--ic on met les chifre (nombre de reservations)--></span></a>
 				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#">Commandes<span><!--ic on met les chifre (nombre de commandes)--></span></a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#">Code QR<span><!--ic on met les chifre (nombre de commandes)--></span></a>
+				</li>
+					{% endif %}
 				{% endif %}
 				{% endfor %}
 				{% endif %}
@@ -86,12 +94,11 @@
 		</div>
 	</nav>
 
-    <center>
-        <h2>Systeme d'authentification restaurent</h2>
+  
     
 
     {% block content %}
     {% endblock %}
-</center>
+
 </body>
 </html>

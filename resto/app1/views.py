@@ -276,5 +276,4 @@ def ajout_restaurant(request):
 def espace_restaurant(request, pk):
     resto = Restaurant.objects.get(id = pk)
 
-    #on recupère menu de resto ...
-
+    return render(request, 'app1/espace_restaurant.html', context={"resto": resto})

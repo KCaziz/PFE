@@ -3,17 +3,6 @@ from django.db import models
 
 from django.utils import timezone
 
-# Create your models here.
-class Product(models.Model):
-    name = models.CharField(max_length=128)
-    slug = models.SlugField(max_length=128)
-    price = models.FloatField(default=0.0)
-    description = models.TextField(blank=True)
-    thumbnail = models.ImageField(upload_to="products", blank=True, null=True)
-    resto_name = models.CharField(max_length=100)
-    def __str__(self):
-        return self.name
-
 class Restaurateur(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
@@ -21,13 +10,14 @@ class Restaurateur(models.Model):
         related_name='restaurateur'
     )
     
-
     def __str__(self):
         return self.user.username
     
 class Restaurant(models.Model):
+
     proprietaire = models.ForeignKey('Restaurateur', on_delete=models.CASCADE, null=False, blank=True)
     resto_name = models.CharField(max_length=100)
+    type = models.CharField(max_length=100, null=True, blank=True)
     phone_resto = models.CharField(max_length=15)
     mail_address = models.CharField(max_length=200)
     address = models.CharField(max_length=200)
@@ -37,8 +27,27 @@ class Restaurant(models.Model):
         return self.resto_name
 
 class Menu(models.Model):
-    restaurateur=models.ForeignKey('Restaurateur', on_delete=models.CASCADE, null=True, blank=True)
-    produits=models.ForeignKey('Product', on_delete=models.CASCADE, null=True, blank=True)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='menus')
+
+    def __str__(self):
+        return self.restaurant.resto_name
+
+class Product(models.Model):
+    name = models.CharField(max_length=128)
+    #slug = models.SlugField(max_length=128)
+    price = models.FloatField(default=0.0)
+    description = models.TextField(blank=True)
+    thumbnail = models.ImageField(upload_to="products", blank=True, null=True)
+    resto_name = models.CharField(max_length=100)
+    menu = models.ForeignKey(Menu, on_delete=models.CASCADE, related_name='products')
+    #clé etrangère vers Menu pour avoir une relation oneToMany 
+    
+    def __str__(self):
+        return self.name
+
+    
+
+    
 
 
 class Order(models.Model):

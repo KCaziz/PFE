@@ -1,0 +1,18 @@
+{% extends 'base.html' %} <!--sera enlevé-->
+{% block content %}
+<div class="float-left m-3">
+    <h3>Restaurant : {{resto.resto_name}}</h3>
+    <h5>Type : {{resto.type}}</h5>
+    <h5>Numéro de téléphone :  {{resto.phone_resto}}</h5>
+    <h5>E-mail : {{resto.mail_address}}</h5>
+    <h5><a href="{{ resto.map_url }}">Adresse Google Map</a></h5>
+
+</div>
+
+
+    <div>
+        
+    </div>
+
+
+{% endblock %}
