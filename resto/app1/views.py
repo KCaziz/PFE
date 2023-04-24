@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, redirect, render
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.core.mail import send_mail, EmailMessage
