@@ -296,3 +296,19 @@ def ajout_produit(request, restoid):
     else :
         form = ProduitForm()
         return render(request, "espace_restaurant.html", context = {"form": form,"resto": restaurant})
+
+def supprimer_produit(request, pk):
+    produit = Product.objects.filter(id=pk)
+    if produit.exists():
+        # On récupère l'id du restaurant auquel appartient le produit
+        restoid = produit.first().restaurant.id
+        
+        # On supprime l'objet Product de la base de données
+        produit.delete()
+        
+        # On redirige l'utilisateur vers la vue espace_restaurant pour le restaurant
+        return redirect('espace_restaurant', pk=restoid)
+    else:
+        # Si l'objet n'existe pas, on affiche une erreur 404
+        raise Http404("Le produit n'existe pas")
+    

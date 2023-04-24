@@ -22,7 +22,7 @@
                 <img src="{{ produit.thumbnail.url }}" alt="" height="150" class="float-left mr-3">
             {%else%}
             {%endif%}
-            <a href="" class="btn btn-danger float-right">Supprimer</a>
+            <a href="{% url 'supprimer_produit' produit.id%}" class="btn btn-danger float-right">Supprimer</a>
             <h3>{{produit.name}} : </h3>
             <h5>{{produit.price}} DA</h5>
             <p>{{produit.description}}</p>
