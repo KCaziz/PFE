@@ -200,7 +200,7 @@ def activate(request, uidb64, token):
         messages.error(request, 'activation échoué !!!')
         return redirect('home')
 
-
+'''
 def ajout_produit(request):
     if request.method == 'POST':
         form = ProduitForm(request.POST)
@@ -215,7 +215,7 @@ def ajout_produit(request):
         form = ProduitForm()
         msg = "Remplissez tous les champs"
         return render(request, "app1/ajout_produit.html", {"form":form, "message":msg})
-
+'''
 def add_to_cart(request, slug):
     user = request.user
     product = get_object_or_404(Product, slug=slug)
@@ -253,7 +253,7 @@ def commande(request):
 
 def ajout_restaurant(request):
     if request.method == 'POST':
-         # Récupérer les données saisies par l'utilisateur
+        # Récupérer les données saisies par l'utilisateur
         user = request.user
         restaurateur = Restaurateur.objects.get(user = user)
         
@@ -275,5 +275,35 @@ def ajout_restaurant(request):
 
 def espace_restaurant(request, pk):
     resto = Restaurant.objects.get(id = pk)
+    produits = Product.objects.filter(restaurant_id = resto.id)
 
-    return render(request, 'app1/espace_restaurant.html', context={"resto": resto})
+
+    form = ProduitForm()
+
+    return render(request, 'app1/espace_restaurant.html', context={"form": form, "resto": resto, "produits": produits})
+
+def ajout_produit(request, restoid):
+    restaurant = Restaurant.objects.get(id=restoid)
+    if request.method == 'POST':
+        form = ProduitForm(request.POST, request.FILES)
+        if form.is_valid():            
+            produit = form.save(commit=False)
+            produit.restaurant = restaurant
+            form.save()
+            form = ProduitForm()
+            
+        return redirect('espace_restaurant', pk=restoid)
+    else :
+        form = ProduitForm()
+        return render(request, "espace_restaurant.html", context = {"form": form,"resto": restaurant})
+'''
+        name = request.POST['name']
+        price = request.POST['price']
+        description = request.POST['description']
+        thumbnail = request.FILES['thumbnail']
+        
+        produit = Product(name = name, price = price, description = description, thumbnail = thumbnail, restaurant = restaurant)
+        produit.save()
+        return redirect('espace_restaurant', pk=restoid)
+    return render(request, 'espace_restaurant.html', {'resto': restaurant})
+'''

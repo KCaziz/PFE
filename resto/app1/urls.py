@@ -9,9 +9,11 @@ urlpatterns = [
     path('logout', views.logOut, name='logout'),
     path('cart/', views.cart, name="cart"),
     path('activate/<uidb64>/<token>', views.activate, name='activate'),
-    path('ajout_produit', views.ajout_produit, name='ajout_produit'),
+    #path('ajout_produit', views.ajout_produit, name='ajout_produit'),
     path('cart/commande', views.commande, name='commande'),
     path('register/restaurateur/espace_restaurant/<int:pk>', views.espace_restaurant, name = 'espace_restaurant'),
     path('restaurateur/ajoutRestaurant', views.ajout_restaurant, name = 'ajout_restaurant'),
+    path('restaurateur/Restaurant/<int:restoid>/ajout_produit', views.ajout_produit, name = 'ajout_produit'),
 
     ]
+ 
