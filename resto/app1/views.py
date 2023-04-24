@@ -296,14 +296,3 @@ def ajout_produit(request, restoid):
     else :
         form = ProduitForm()
         return render(request, "espace_restaurant.html", context = {"form": form,"resto": restaurant})
-'''
-        name = request.POST['name']
-        price = request.POST['price']
-        description = request.POST['description']
-        thumbnail = request.FILES['thumbnail']
-        
-        produit = Product(name = name, price = price, description = description, thumbnail = thumbnail, restaurant = restaurant)
-        produit.save()
-        return redirect('espace_restaurant', pk=restoid)
-    return render(request, 'espace_restaurant.html', {'resto': restaurant})
-'''

@@ -12,19 +12,21 @@
 
 
 <div>
-    <h3>Menu du restaurant</h3>
-    <ul>
+    <center><h3>Menu du restaurant</h3></center>
+    <ul class="m-5">
         {% if produits%}
         {% for produit in produits %}
-        <li style="display:block;">
+        <li style="display:block;clear:both;">
+            
             {% if produit.thumbnail%}
-            <img src="{{ produit.thumbnail.url }}" alt="{{ produit.name }}">
-
+                <img src="{{ produit.thumbnail.url }}" alt="" height="150" class="float-left mr-3">
             {%else%}
             {%endif%}
             <a href="" class="btn btn-danger float-right">Supprimer</a>
-            <h4>{{produit.name}} : {{produit.price}}</h4>
+            <h3>{{produit.name}} : </h3>
+            <h5>{{produit.price}} DA</h5>
             <p>{{produit.description}}</p>
+            
         </li>
         {% endfor %}
         {% else %}
@@ -35,11 +37,12 @@
 
 
 <div class="m-5">
-
-    <form method="POST" action="{% url 'ajout_produit' resto.id %}" class="border p-5" enctype="multipart/form-data">
-        <h3>Ajouter une consomation </h3>
+<br><br>
+<center><h2>Ajouter une consomation </h2></center>
+    <form method="POST" action="{% url 'ajout_produit' resto.id %}" class="border p-5 m-5" enctype="multipart/form-data">
+        
         {% csrf_token %}
-        {{form.as_p}}
+        {{ form.as_div }}
         <button type="submit" class="btn btn-primary">Ajouter Consomation</button>
 
         
@@ -64,5 +67,14 @@
     -->
     </form>
 </div>
+<script>
+    // Sélectionnez tous les champs du formulaire
+    const formFields = document.querySelectorAll('form input, form select, form textarea');
+
+    // Ajoutez la classe CSS "ma-classe-css" à chaque champ du formulaire
+    formFields.forEach(field => {
+        field.classList.add('form-control');
+    });
+</script>
 
 {% endblock %}
