@@ -1,3 +1,4 @@
+import base64
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import Http404, HttpResponse
 from django.contrib.auth.models import User, Group
@@ -7,13 +8,17 @@ from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from restaurent import settings
+import qrcode
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_bytes, force_text
+from django.utils.text import slugify
 from django.contrib.auth import authenticate, login, logout
 
 from .models import Restaurateur, Product, Cart, Order, Restaurant
 from .forms import ProduitForm
 from .token import generatorToken
+
+
 
 # Create your views here.
 
@@ -249,6 +254,18 @@ def commande(request):
         user.cart.delete()
     return redirect('home')
 
+def restaurant_orders(request, pk):
+    restaurant = Restaurant.objects.get(pk=pk)
+    orders = Order.objects.filter(product__restaurant=restaurant, processed=False)
+    return render(request, 'restaurant_orders.html', {'orders': orders})
+
+def process_order(request, pk):
+    order = Order.objects.get(pk=pk)
+    order.processed = True
+    order.save()
+    return redirect('restaurant_orders', order.product.restaurant.pk)
+
+
 ######## Restaurant ######
 
 def ajout_restaurant(request):
@@ -312,3 +329,29 @@ def supprimer_produit(request, pk):
         # Si l'objet n'existe pas, on affiche une erreur 404
         raise Http404("Le produit n'existe pas")
     
+    return render(request, 'app1/espace_restaurant.html', context={"resto": resto})
+
+def affichage_menu(request, pk):
+        resto = Restaurant.objects.get(id = pk)
+        menu = Product.objects.filter(restaurant__resto_name  = resto.resto_name)
+        return render(request, 'app1/menu.html', context={"menu": menu, "resto_name" : resto.resto_name})
+
+
+def qr_code(request, pk):
+    resto = Restaurant.objects.get(id = pk)
+    # slug = slugify(resto.resto_name)  
+    qr = qrcode.QRCode(version=1, box_size=10, border=5)
+    data = f"http://127.0.0.1:8000/{resto.id}" #(remplacer l'id par le slug si besoin)
+    qr.add_data(data)
+    qr.make(fit=True)
+    qr_img = qr.make_image(fill_color="black", back_color="white")
+
+    # Convertir l'image QR en format PNG pour l'inclure dans l'e-mail
+    from io import BytesIO
+    buffer = BytesIO()
+    qr_img.save(buffer, format='PNG')
+    buffer.seek(0)
+    qr_image_data = buffer.getvalue()
+    qr_image_base64 = base64.b64encode(qr_image_data).decode('utf-8')
+
+    return render(request, 'app1/qr_code.html', {'qrcode': qr_image_base64})

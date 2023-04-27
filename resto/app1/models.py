@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 
 from django.utils import timezone
+from django.utils.text import slugify
 
 class Restaurateur(models.Model):
     user = models.OneToOneField(
@@ -28,15 +29,24 @@ class Restaurant(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=128)
-    #slug = models.SlugField(max_length=128)
+    slug = models.SlugField(unique=True, max_length=255, blank=True, null=True, editable=False)
     price = models.FloatField(default=0.0)
     description = models.TextField(blank=True)
     thumbnail = models.ImageField(upload_to="products", blank=True, null=True)
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='products')
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='products')    # menu = models.ForeignKey(Menu, on_delete=models.CASCADE, related_name='products')
     #clé etrangère vers Menu pour avoir une relation oneToMany 
+    def save(self, *args, **kwargs):
+        if not self.id:
+            # Si l'objet n'existe pas encore en base, générer le slug à partir de rest_name
+            self.slug = slugify(self.rest_name)
+        super().save(*args, **kwargs)
     
     def __str__(self):
         return self.name
+
+    
+
+    
 
 
 class Order(models.Model):
@@ -45,6 +55,7 @@ class Order(models.Model):
     quantity = models.IntegerField(default=1)
     ordered = models.BooleanField(default=False)
     ordered_date = models.DateTimeField(blank=True, null=True)
+    processed = models.BooleanField(default=False)
 
 
     def __str__(self) :

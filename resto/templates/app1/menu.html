@@ -1,0 +1,31 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+</head>
+<body>
+    
+</body>
+</html>
+<a href="{% url 'login' %}">se connecter</a>  <a href="{% url 'registerClient' %}">s'inscrire</a>
+{% block content %} 
+<div>
+    <p>bienvenue a {{ resto_name }}</p>
+{% for plat in menu %}
+
+<div>
+    <p>voici notre carte</p>
+    <p>{{ plat.name }}</p>
+    <p>{{ plat.price }}</p>
+    <p>{{ plat.description }}</p>
+    {% if plat.thumbnail %}
+                <img src="{{ plat.thumbnail.url }}" alt="{{ plat.name }} Thumbnail">
+</div>
+
+</div>
+    {% endif %}
+<br><br>
+{% endfor %}
+{% endblock %}
