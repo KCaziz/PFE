@@ -49,8 +49,9 @@
 					<a class="nav-link" href="#">Réservations<span><!--ic on met les chifre (nombre de reservations)--></span></a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="{% url 'restaurant_orders' resto.id %}">Commandes<span><!--ic on met les chifre (nombre de commandes)--></span></a>
-				</li>
+					<a class="nav-link" href="{% url 'restaurant_orders' resto.id %}">
+						Commandes<span class="badge badge-danger">{% if num_orders > 0 %}{{ num_orders }}{% endif %}</span>
+					</a>				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="{% url 'qr_code' resto.id %}">QR code</a>				</li>
 					{% endif %}

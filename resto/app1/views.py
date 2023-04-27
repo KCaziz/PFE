@@ -257,7 +257,8 @@ def commande(request):
 def restaurant_orders(request, pk):
     restaurant = Restaurant.objects.get(id=pk)
     orders = Order.objects.filter(product__restaurant=restaurant, processed=False)
-    return render(request, 'app1/restaurant_orders.html', {'orders': orders})
+    num_orders = orders.count()  # Nombre de commandes en attente
+    return render(request, 'app1/restaurant_orders.html', {'orders': orders, 'num_orders': num_orders})
 
 def process_order(request, pk):
     order = Order.objects.get(pk=pk)
@@ -293,11 +294,12 @@ def ajout_restaurant(request):
 def espace_restaurant(request, pk):
     resto = Restaurant.objects.get(id = pk)
     produits = Product.objects.filter(restaurant_id = resto.id)
-
+    orders = Order.objects.filter(product__restaurant=resto, processed=False)
+    num_orders = orders.count()
 
     form = ProduitForm()
 
-    return render(request, 'app1/espace_restaurant.html', context={"form": form, "resto": resto, "produits": produits})
+    return render(request, 'app1/espace_restaurant.html', context={"form": form, "resto": resto, "produits": produits, "num_orders":num_orders})
 
 def ajout_produit(request, restoid):
     restaurant = Restaurant.objects.get(id=restoid)
