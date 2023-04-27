@@ -38,7 +38,7 @@ class Product(models.Model):
     def save(self, *args, **kwargs):
         if not self.id:
             # Si l'objet n'existe pas encore en base, générer le slug à partir de rest_name
-            self.slug = slugify(self.rest_name)
+            self.slug = slugify(self.name)
         super().save(*args, **kwargs)
     
     def __str__(self):

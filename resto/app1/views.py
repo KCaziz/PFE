@@ -255,9 +255,9 @@ def commande(request):
     return redirect('home')
 
 def restaurant_orders(request, pk):
-    restaurant = Restaurant.objects.get(pk=pk)
+    restaurant = Restaurant.objects.get(id=pk)
     orders = Order.objects.filter(product__restaurant=restaurant, processed=False)
-    return render(request, 'restaurant_orders.html', {'orders': orders})
+    return render(request, 'app1/restaurant_orders.html', {'orders': orders})
 
 def process_order(request, pk):
     order = Order.objects.get(pk=pk)
@@ -312,7 +312,7 @@ def ajout_produit(request, restoid):
         return redirect('espace_restaurant', pk=restoid)
     else :
         form = ProduitForm()
-        return render(request, "espace_restaurant.html", context = {"form": form,"resto": restaurant})
+        return render(request, "app1/espace_restaurant.html", context = {"form": form,"resto": restaurant})
 
 def supprimer_produit(request, pk):
     produit = Product.objects.filter(id=pk)
