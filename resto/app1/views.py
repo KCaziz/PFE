@@ -239,18 +239,31 @@ def add_to_cart(request, slug):
     
     return redirect('home')
 
-def cart(request):
-    cart = get_object_or_404(Cart, user=request.user)
-    return render(request, 'app1/cart.html', {'orders': cart.orders.all()})
-
 def delete_cart(request):
     if cart := request.user.cart:
         cart.delete()
-    return redirect('home')
+    return redirect('cart')
 
-def commande(request):
+def cart(request):
     user = request.user
-    if cart : 
+    try:
+        cart = Cart.objects.get(user=user)
+        orders = cart.orders.all()
+    except Cart.DoesNotExist:
+        orders = []
+    return render(request, 'app1/cart.html', {'orders': orders})
+
+
+def commande (request):
+    user = request.user
+    orders = Order.objects.filter(user = user)
+    return render(request, 'app1/commandes.html', {'user':user, 'orders':orders})
+
+
+def valider(request):
+    user = request.user
+    if user.cart : 
+        user.cart.orders.update(ordered = True)
         user.cart.delete()
     return redirect('home')
 
