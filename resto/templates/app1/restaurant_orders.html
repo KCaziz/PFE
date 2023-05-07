@@ -2,6 +2,35 @@
 
 {% block content %}
   <h1>Commandes en attente {{num_orders}} </h1>
+  {% if user_orders %}
+  {% for user_order in user_orders%}
+    <details>
+      <summary><table class="table"><td>{{ user_order.user__username }} </td><td>{{user_order.total_orders}} commande(s)</td><td><a class="btn btn-danger" href="{% url 'process_order_user' user_order.user__username %}">Traiter toutes les commandes</a></td></table></summary>
+      <table class="table">
+        <thead class="thead-dark">
+          <th>Produit</th>
+          <th>Quantité</th>
+          <th>Traitement</th>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+            {% if order.user.username == user_order.user__username %}
+              <tr>
+                <td>{{ order.product.name }}</td>
+                <td>{{ order.quantity }}</td>
+                <td><a class="btn btn-danger" href="{% url 'process_order' order.id %}">   Traiter   </a></td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </details>
+  {% endfor%}
+{% endif %}
+
+  
+  
+  <!--
   {% if orders %}
     <ul>
       {% for order in orders %}
@@ -17,4 +46,5 @@
   {% else %}
     <p>Aucune commande en attente pour le moment.</p>
   {% endif %}
+  -->
 {% endblock %}

@@ -17,7 +17,7 @@ from django.contrib.auth import authenticate, login, logout
 from .models import Restaurateur, Product, Cart, Order, Restaurant
 from .forms import ProduitForm
 from .token import generatorToken
-
+from django.db.models import Count
 
 
 # Create your views here.
@@ -266,18 +266,35 @@ def valider(request):
         user.cart.orders.update(ordered = True)
         user.cart.delete()
     return redirect('home')
-
+''' par mesure de précaution on a garder l'encienne version
 def restaurant_orders(request, pk):
     restaurant = Restaurant.objects.get(id=pk)
     orders = Order.objects.filter(product__restaurant=restaurant, processed=False)
     num_orders = orders.count()  # Nombre de commandes en attente
     return render(request, 'app1/restaurant_orders.html', {'orders': orders, 'num_orders': num_orders})
+'''
+def restaurant_orders(request, pk):
+    restaurant = Restaurant.objects.get(id=pk)
+    orders = Order.objects.filter(product__restaurant=restaurant, processed=False)
+    user_orders = orders.values('user__username').annotate(total_orders = Count('id'))
+    num_orders = orders.count()  # Nombre de commandes en attente
+    return render(request, 'app1/restaurant_orders.html', {'orders': orders, 'num_orders': num_orders, 'user_orders': user_orders})
+
 
 def process_order(request, pk):
     order = Order.objects.get(pk=pk)
     order.processed = True
     order.save()
     return redirect('restaurant_orders', order.product.restaurant.pk)
+
+def process_order_user(request, username):
+    orders = Order.objects.filter(user__username=username)
+    for order in orders:
+        order.processed = True
+        order.save() 
+    return redirect('restaurant_orders', orders[0].product.restaurant.pk)
+
+
 
 
 ######## Restaurant ######

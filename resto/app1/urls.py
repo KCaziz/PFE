@@ -20,6 +20,7 @@ urlpatterns = [
     path('restaurateur/Restaurant/produit/Supprimer/<int:pk>', views.supprimer_produit, name='supprimer_produit'),
     path('restaurateur/espace_restaurant/<int:pk>/resto_commandes', views.restaurant_orders, name='restaurant_orders'),
     path('restaurateur/espace_restaurant/<int:pk>/resto_commandes/traitement', views.process_order, name='process_order'),
+    path('restaurateur/espace_restaurant/<str:username>/resto_commandes/traitement', views.process_order_user, name='process_order_user'),
     path('restaurateur/espace_restaurant/<int:pk>/qr_code', views.qr_code, name='qr_code'),
 
     ]
