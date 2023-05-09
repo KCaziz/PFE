@@ -45,6 +45,9 @@
 					<a class="nav-link" href="{% url 'cart' %}">Mon Panier</a>
 				</li>
 				
+				<li class="nav-item">
+					<a class="nav-link" href="{% url 'search' %}">Rechercher</a>
+				</li>
 					{% endif %}
 				
 				{% endfor %}
@@ -96,18 +99,7 @@
     {% for group in user.groups.all %}
 
         {% if group.name == 'Client' %}
-            <div class="menu">
-                {% for product in products %}
-	        	<h5>{{ product.name }}</h5>
-				<h5>{{ product.description }}</h5>
-				{% if product.thumbnail %}
-                <img src="{{ product.thumbnail.url }}" alt="{{ product.name }} Thumbnail">
-           		{% endif %}
-				<br><br>
-				<p><a href="{% url 'add_to_cart' product.slug %}">ajouter dans le panier</a></p>		 
-				<br><br><br><br><br><br><br>       
-				{% endfor %}
-            </div>
+           
         {% endif %}
 
         {% if group.name == 'Restaurateur' %}

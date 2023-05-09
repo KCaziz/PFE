@@ -1,6 +1,8 @@
 import base64
+import json
+from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404, redirect, render
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.core.mail import send_mail, EmailMessage
@@ -237,7 +239,7 @@ def add_to_cart(request, slug):
         order.quantity +=1
         order.save()
     
-    return redirect('home')
+    return redirect('menu', product.restaurant.id)
 
 def delete_cart(request):
     if cart := request.user.cart:
@@ -266,7 +268,7 @@ def valider(request):
         user.cart.orders.update(ordered = True)
         user.cart.delete()
     return redirect('home')
-''' par mesure de précaution on a garder l'encienne version
+''' par mesure de précaution on a garder l'ancienne version
 def restaurant_orders(request, pk):
     restaurant = Restaurant.objects.get(id=pk)
     orders = Order.objects.filter(product__restaurant=restaurant, processed=False)
@@ -295,9 +297,18 @@ def process_order_user(request, username):
     return redirect('restaurant_orders', orders[0].product.restaurant.pk)
 
 
+def search(request):
+    if request.method == 'GET' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        term = request.GET.get('term', '')
+        restos = Restaurant.objects.filter(resto_name__icontains=term)[:10]
+        results = [{'id': resto.id, 'nom': resto.resto_name} for resto in restos]
+        return JsonResponse({'results': results})
+    elif request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({'message': 'AJAAAAAXXXXX'})
+    return render(request, 'app1/search.html')
 
 
-######## Restaurant ######
+######## Restaurant #################################################################################################################################
 
 def ajout_restaurant(request):
     if request.method == 'POST':

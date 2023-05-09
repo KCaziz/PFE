@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<form id="search-form">
+    <input type="text" name="term" id="search-term" placeholder="Rechercher un restaurant">
+    <ul id="search-results"></ul>
+  </form>
+  <h2 id="H2"></h2>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+  <script>
+   $(document).ready(function() {
+  $('#search-term').keyup(function() {
+    $('#search-results').html('');
+    var term = $(this).val().trim();
+    if (term != "") {
+      $.ajax({
+        url: '{% url "search" %}',
+        method: 'GET',
+        data: {'term': term},
+        dataType: 'json',
+        success: function(data) {
+          var results = data.results;
+          if (results.length == 0) {
+            document.getElementById('H2').innerHTML ="<div style='font-size: 20px; text-align:center;margin-top:10px'>Aucun Produit trouvé</div>"
+
+          }else{
+            document.getElementById('H2').innerHTML ="<div style='font-size: 20px; text-align:center;margin-top:10px'>Selctionné votre choix</div>"
+
+          }
+          $('#search-results').empty();
+          $.each(results, function(index, result) {
+            var li = $('<li>');
+            var link = $('<a>').attr('href', "{% url 'menu' 0 %}".replace('0', result.id)).text(result.nom);
+            li.append(link);
+            $('#search-results').append(li);
+          });
+        //   pour chaque resultat execution de la fonction
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log(textStatus, errorThrown);
+            // creation de deux cas success et error
+  }
+        
+      });
+      
+    } else {
+      $('#search-results').empty();
+      document.getElementById('H2').innerHTML ="<div style='font-size: 20px; text-align:center;margin-top:10px'>Veuillez entrez le nom du restaurant desirez</div>"
+    }
+  });
+});
+  </script>
+
+{% endblock %}
