@@ -16,8 +16,8 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.text import slugify
 from django.contrib.auth import authenticate, login, logout
 
-from .models import Restaurateur, Product, Cart, Order, Restaurant
-from .forms import ProduitForm
+from .models import Restaurateur, Product, Cart, Order, Restaurant, Avis
+from .forms import ProduitForm, AvisForm
 from .token import generatorToken
 from django.db.models import Count
 
@@ -308,6 +308,39 @@ def search(request):
     return render(request, 'app1/search.html')
 
 
+def avis_restaurant(request, restaurant_id):
+    restaurant = Restaurant.objects.get(id=restaurant_id)
+    avis = Avis.objects.filter(restaurant=restaurant)
+    if request.method == 'POST':
+        form = AvisForm(request.POST)
+        if form.is_valid():
+            avis = form.save(commit=False)
+            avis.restaurant = restaurant
+            avis.auteur = request.user
+            avis.save()
+            messages.success(request, 'Votre avis a été enregistré avec succès.')
+            return redirect('avis_restaurant', restaurant_id=restaurant_id)
+    else:
+        form = AvisForm()
+    return render(request, 'app1/avis_restaurant.html', {'restaurant': restaurant, 'avis': avis, 'avis_form':form})
+
+
+# def ajouter_avis(request, restaurant_id):
+#     restaurant = Restaurant.objects.get(id=restaurant_id)
+#     if request.method == 'POST':
+#         form = AvisForm(request.POST)
+#         if form.is_valid():
+#             avis = form.save(commit=False)
+#             avis.restaurant = restaurant
+#             avis.utilisateur = request.user
+#             avis.save()
+#             messages.success(request, 'Votre avis a été enregistré avec succès.')
+#             return redirect('avis_restaurant', restaurant_id=restaurant_id)
+#     else:
+#         form = AvisForm()
+#     return render(request, 'app1/avis_restaurant.html', {'restaurant': restaurant, 'avis_form': form})
+
+
 ######## Restaurant #################################################################################################################################
 
 def ajout_restaurant(request):
@@ -377,7 +410,7 @@ def supprimer_produit(request, pk):
 def affichage_menu(request, pk):
         resto = Restaurant.objects.get(id = pk)
         menu = Product.objects.filter(restaurant__resto_name  = resto.resto_name)
-        return render(request, 'app1/menu.html', context={"menu": menu, "resto_name" : resto.resto_name})
+        return render(request, 'app1/menu.html', context={"menu": menu, "resto" : resto})
 
 
 def qr_code(request, pk):

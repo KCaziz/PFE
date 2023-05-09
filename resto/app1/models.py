@@ -1,8 +1,9 @@
 from django.conf import settings
 from django.db import models
-
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
 from django.utils.text import slugify
+from django.db.models import Avg
 
 class Restaurateur(models.Model):
     user = models.OneToOneField(
@@ -23,6 +24,11 @@ class Restaurant(models.Model):
     mail_address = models.CharField(max_length=200)
     address = models.CharField(max_length=200)
     map_url = models.URLField(blank=True, null=True)
+    moyenne = models.FloatField(default=2.5)
+
+    def update_moyenne(self):
+        self.moyenne = self.avis.aggregate(Avg('note'))['note__avg'] or 0.0
+        self.save()
 
     def __str__(self):
         return self.resto_name
@@ -43,11 +49,6 @@ class Product(models.Model):
     
     def __str__(self):
         return self.name
-
-    
-
-    
-
 
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
@@ -75,3 +76,17 @@ class Cart(models.Model):
         self.orders.clear()
         super().delete(*args, **kwargs)
 
+
+class Avis(models.Model):
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='avis')
+    auteur = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    note = models.IntegerField(validators=[MaxValueValidator(5), MinValueValidator(1)])
+    commentaire = models.TextField(max_length=1000, blank=True, null=True)
+    date_avis = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.restaurant.update_moyenne()
+    
+    def __str__(self):
+        return self.auteur.username

@@ -2,7 +2,11 @@
 {% block content %} 
 <center>
     <div>
-        <p>bienvenue a {{ resto_name }}</p>
+        <p>bienvenue a {{ resto.resto_name }}</p>
+        <p>notre moyenne {{resto.moyenne}}</p>
+        <p>Vous pouvez consulter les avis du restaurant</p>
+        <br>
+        <p><a href="{%url 'avis_restaurant' resto.id %}">Les Avis</a></p>
     {% for plat in menu %}
     
     <div>

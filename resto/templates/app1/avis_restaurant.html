@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<center>
+    
+    <h2>Les avis et critiques de {{restaurant.resto_name}}</h2>
+    <h4>la moyenne : {{restaurant.moyenne}}</h4>
+    {% for a in avis %}
+    <p>avis émis le {{a.date_avis}} par {{a.auteur.username}}</p>
+    <p>Note : {{a.note}}</p>
+    <p>critique : {{a.commentaire}}</p>
+    {%endfor%}
+    <br><br>
+    {% if user.is_authenticated %}
+
+    {% for group in user.groups.all %}
+
+        {% if group.name == 'Client' %}
+        <p>vous pouver ajouter un avis ici</p>
+        
+        <form action="{% url 'avis_restaurant' restaurant.id %}" method="post" class="col-md-6">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ avis_form.note.label_tag }}
+                <input type="number" name="{{ avis_form.note.name }}" class="form-control" min="1" max="5" required>
+            </div>
+            <div class="form-group">
+                {{ avis_form.commentaire.label_tag }}
+                {{ avis_form.commentaire }}
+            </div>
+            <button type="submit" class="btn btn-primary">Envoyer</button>
+        </form>
+        
+        
+        {% endif %}
+
+        {%endfor%}
+    {%endif%}
+</center>
+{% endblock %}

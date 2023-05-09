@@ -3,6 +3,7 @@
 <div class="left m-3">
     <h3>Restaurant : {{resto.resto_name}}</h3>
     <h5>Type : {{resto.type}}</h5>
+    <h5>Moyenne des utilisateur : {{resto.moyenne}}</h5>
     <h5>Numéro de téléphone :  {{resto.phone_resto}}</h5>
     <h5>E-mail : {{resto.mail_address}}</h5>
     <h5><a href="{{ resto.map_url }}">Adresse Google Map</a></h5>
@@ -12,7 +13,13 @@
 
 
 <div>
-    <center><h3>Menu du restaurant</h3></center>
+    <center>
+        <H3>Vous pouvez consulter les avis de votre restaurant</H3>
+        <br>
+        <p><a href="{%url 'avis_restaurant' resto.id %}"></a>Les Avis</p>
+
+        <h3>Menu du restaurant</h3>
+    </center>
     <ul class="m-5">
         {% if produits%}
         {% for produit in produits %}
