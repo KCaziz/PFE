@@ -1,35 +1,41 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h2>s'enregistrer ici</h2>
+<center><h2>S'inscrire en tant que <strong>client</strong></h2></center>
 
 {% for message in messages %} 
 
  <strong>{{ message }} </strong> 
 
 {% endfor %}
+<br>
+
+<div class="m-auto w-50">
 
 <form method="post" action="/register/client">
     {% csrf_token %}
     <label for="username">username</label>
-    <input type="text" name="username" id="username" placeholder="Enter Your Username" required>
-    <br><br>
+    <input class="form-control" type="text" name="username" id="username" placeholder="Enter Your Username" required>
+    <br>
     <label for="firstname">firstname</label>
-    <input type="text" name="firstname" id="firstname" placeholder="Enter Your firstname" required>
-    <br><br>
+    <input class="form-control" type="text" name="firstname" id="firstname" placeholder="Enter Your firstname" required>
+    <br>
     <label for="lastname">lastname</label>
-    <input type="text" name="lastname" id="lastname" placeholder="Enter Your lastname" required>
-    <br><br>
+    <input class="form-control" type="text" name="lastname" id="lastname" placeholder="Enter Your lastname" required>
+    <br>
     <label for="email">email</label>
-    <input type="email" name="email" id="email" placeholder="Enter Your email" required>
-    <br><br>
+    <input class="form-control" type="email" name="email" id="email" placeholder="Enter Your email" required>
+    <br>
     <label for="password">password</label>
-    <input type="password" name="password" id="password" placeholder="Enter Your password" required>
-    <br><br>
-    <label for="password1">password1</label>
-    <input type="password" name="password1" id="password1" placeholder="Enter Your password1" required>
-    <br><br>
+    <input class="form-control" type="password" name="password" id="password" placeholder="Enter Your password" required>
+    <br>
+    <label for="password1">password Confirmation</label>
+    <input class="form-control" type="password" name="password1" id="password1" placeholder="Enter Your password1" required>
+    <br>
 
-    <button type="submit">s'enregistrer</button>
+    <button class="btn btn-primary" type="submit">s'enregistrer</button>
 </form>
+<a href="{%url 'home'%}"class="btn btn-light">Accueil</a>
+
+</div>
 {% endblock %}

@@ -1,93 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Mon site de commande de restaurant</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-	<style>
-		html{
-			height: 100%;
-		}
-		body {
-			background-size: cover;
-			background-repeat: no-repeat;
-			background-position: center center;
-			height: 100%;
-		}
-	</style>
-
-</head>
-<body>
-	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<a class="navbar-brand" href="#">Mon site de commande de restaurant</a>
-		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse" id="navbarNav">
-			<ul class="navbar-nav">
-				<li class="nav-item active">
-					<a class="nav-link" href="#">Accueil</a>
-				</li>
-				
-				{% if user.is_authenticated %}
-				{% for group in user.groups.all %}
-
-					{% if group.name == 'Client' %}
-
-				<li class="nav-item">
-					<a class="nav-link" href="{% url 'commande' %}">Commander</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="#">Réserver</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="{% url 'cart' %}">Mon Panier</a>
-				</li>
-				
-				<li class="nav-item">
-					<a class="nav-link" href="{% url 'search' %}">Rechercher</a>
-				</li>
-					{% endif %}
-				
-				{% endfor %}
-				{% endif %}
-			</ul>
-			<ul class="navbar-nav ml-auto">
-
-
-				{% if user.is_authenticated %}
-
-
-
-				<li class="nav-item">
-					<a class="nav-link" href="#">Profil</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="{% url 'logout' %}">Déconnexion</a>
-				</li>
-
-
-
-				{% else %}
-
-
-
-				<li class="nav-item">
-					<a class="nav-link" href="{% url 'login' %}">Connexion</a>
-				</li>
-				
-				<li class="nav-item">
-					<a class="nav-link" href="{% url 'registerClient' %}">Inscription</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="{% url 'register_restaurateur' %}">As restaurateur</a>
-				</li>
-				{% endif %}
-			</ul>
-		</div>
-	</nav>
-
+{% extends 'base.html' %}
+{% block content %}
 	<div class="container mt-5">
 		<h1>Bienvenue sur mon site de commande de restaurant</h1>
 		<p>Vous pouvez commander, réserver et gérer vos commandes ou réservations en toute simplicité.</p>
@@ -104,16 +16,15 @@
 
         {% if group.name == 'Restaurateur' %}
 		<div>
+			<br>
 			{% if restos %}
 			<!-- le restaurateur a déjà inséré des restaurants -->
 			<h3>Choix du restaurant</h3>
-			<ul>
+			<div class="restaurant-links">
 				{% for resto in restos %}
-					<li>
-						<a href="{% url 'espace_restaurant' resto.id %}">{{ resto.resto_name }}</a>
-					</li>
+					<a href="{% url 'espace_restaurant' resto.id %}" class="restaurant-link">{{ resto.resto_name }}</a>
 				{% endfor %}
-			</ul>
+			</div>
 			
 			
 			{%else%}
@@ -121,7 +32,7 @@
 			<h3>Veillez ajouter un restaurant</h3>
 			{%endif%}
 
-			<a class="nav-link" href="{% url 'ajout_restaurant' %}">Ajouter Restaurant</a>
+			<a class="btn btn-primary" href="{% url 'ajout_restaurant' %}" style="clear:both;">Ajouter Restaurant</a>
 		</div>
         {% endif %}
 
@@ -134,5 +45,6 @@
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-</body>
-</html>
+
+	
+{% endblock %}

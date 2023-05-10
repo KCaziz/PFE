@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<form id="search-form">
-    <input type="text" name="term" id="search-term" placeholder="Rechercher un restaurant">
-    <ul id="search-results"></ul>
+  <form id="search-form" class="mx-auto" style="max-width: 600px;">
+    <div class="form-group mb-0">
+      <input type="text" name="term" id="search-term" placeholder="Rechercher un restaurant" class="form-control">
+    </div>
+    <ul id="search-results" class="list-group"></ul>
   </form>
   <h2 id="H2"></h2>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -31,8 +33,18 @@
           }
           $('#search-results').empty();
           $.each(results, function(index, result) {
-            var li = $('<li>');
+            var li = $('<li>').addClass('list-group-item');            
             var link = $('<a>').attr('href', "{% url 'menu' 0 %}".replace('0', result.id)).text(result.nom);
+            link.addClass('text-dark text-decoration-none d-block');
+            link.hover(function() {
+              $(this).css('text-decoration', 'none');
+              // sélectionne l'élément parent (li) et ajoute la classe "bg-light"
+              $(this).parent().css('background-color', 'lightgray');
+              }, function() {
+                // retire la couleur de fond lorsque le curseur est retiré de l'élément "a"
+                $(this).parent().css('background-color', '');
+              }
+            );
             li.append(link);
             $('#search-results').append(li);
           });

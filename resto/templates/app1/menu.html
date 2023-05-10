@@ -1,31 +1,50 @@
 {%extends 'base.html'%}
 {% block content %} 
-<center>
-    <div>
-        <p>bienvenue a {{ resto.resto_name }}</p>
-        <p>notre moyenne {{resto.moyenne}}</p>
-        <p>Vous pouvez consulter les avis du restaurant</p>
-        <br>
-        <p><a href="{%url 'avis_restaurant' resto.id %}">Les Avis</a></p>
-    {% for plat in menu %}
-    
-    <div>
-        <p>voici notre carte</p>
-        <p>{{ plat.name }}</p>
-        <p>{{ plat.price }} DA</p>
-        <p>{{ plat.description }}</p>
-        {% if plat.thumbnail %}
-                    <img src="{{ plat.thumbnail.url }}" alt="{{ plat.name }} Thumbnail">
-         {% endif %}
-    </div>
-    {% if user.is_authenticated %}
-    <p><a href="{% url 'add_to_cart' plat.slug %}">ajouter dans le panier</a></p>		 
-				<br><br><br><br>
-    </div>
-    {%endif%}
-    </center>
-        
-    <br><br>
-    {% endfor %}
 
+
+    <div class="left m-3">
+        <h3>Bienvenue à : {{resto.resto_name}}</h3> 
+        <h5>Type : {{resto.type}}</h5>
+        <h5 style="float: left;margin-right: 5px;">note Moyenne : {{resto.moyenne}}</h5> <span class="d-block ml-2"><a class="d-inline text-muted"  href="{%url 'avis_restaurant' resto.id %}">Voir les Avis</a></span>
+        <h5 style="clear: both;">Numéro de téléphone :  {{resto.phone_resto}}</h5>
+        <h5>E-mail : {{resto.mail_address}}</h5>
+        <h5><a href="{{ resto.map_url }}">Adresse Google Map</a></h5>
+    </div>
+
+    <br><br>
+    <center><h2>Voici notre carte</h2></center>
+    <br>
+    <ul>
+        {% for plat in menu %}
+        <li>
+        
+            {% if plat.thumbnail%}
+                <img src="{{ plat.thumbnail.url }}" alt="" height="150" class="float-left mr-3">
+            {%else%}
+            {%endif%}
+            {% if user.is_authenticated %}
+                <a href="{% url 'add_to_cart' plat.slug %}" class="btn btn-danger float-right mt-5">Ajouter dans le panier</a>
+            {% endif %}
+            <h3>{{plat.name}} : </h3>
+            <h5>{{plat.price}} DA</h5>
+            <p>{{plat.description}}</p>
+
+            <!--
+            <p>{{ plat.name }}</p>
+            <p>{{ plat.price }} DA</p>
+            <p>{{ plat.description }}</p>
+            {% if plat.thumbnail %}
+                <img src="{{ plat.thumbnail.url }}" alt="{{ plat.name }} Thumbnail">
+            {% endif %}
+        
+        {% if user.is_authenticated %}
+        <p><a href="{% url 'add_to_cart' plat.slug %}">ajouter dans le panier</a></p>	
+            -->	 
+        </li>
+        <br><br><br><br>
+        {%endif%}
+        <br><br>
+        {% endfor %}
+    </ul>
+    
 {% endblock %}
