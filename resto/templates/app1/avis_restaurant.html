@@ -2,13 +2,62 @@
 {% block content %}
 <center>
     
-    <h2>Les avis et critiques de {{restaurant.resto_name}}</h2>
-    <h4>la moyenne : {{restaurant.moyenne}}</h4>
-    {% for a in avis %}
-    <p>avis émis le {{a.date_avis}} par {{a.auteur.username}}</p>
-    <p>Note : {{a.note}}</p>
-    <p>critique : {{a.commentaire}}</p>
-    {%endfor%}
+    <div class="container">
+        <h2 class="mb-4">Avis et critiques sur <strong>{{restaurant.resto_name}}</strong></h2>
+        <h2 class="mb-4 mt-0">
+            <span style="color: rgb(250, 212, 0);">★</span>
+                    {% if restaurant.moyenne > 1%}
+                    <span style="color: rgb(250, 212, 0);">★</span>
+                    {%endif%}
+                    {% if restaurant.moyenne > 2%}
+                    <span style="color: rgb(250, 212, 0);">★</span>
+                    {%endif%}
+                    {% if restaurant.moyenne > 3%}
+                    <span style="color: rgb(250, 212, 0);">★</span>
+                    {%endif%}
+                    {% if restaurant.moyenne > 4%}
+                    <span style="color: rgb(250, 212, 0);">★</span>
+                    {%endif%}
+                    ({{restaurant.moyenne|floatformat:1 }})
+        </h2>
+        <br>
+        <div class="row">
+          {% for a in avis %}
+          <div class="col-md-3">
+            <div class="card-body mb-4 d-flex flex-column" style="text-align: left;" id="card-avis">
+              
+                <h4 class="card-title">
+                    <strong>{{a.auteur.username}}</strong>
+                    <span style="float: right; color: rgb(250, 212, 0);">★</span>
+                    {% if a.note > 1%}
+                    <span style="float: right; color: rgb(250, 212, 0);">★</span>
+                    {%endif%}
+                    {% if a.note > 2%}
+                    <span style="float: right; color: rgb(250, 212, 0);">★</span>
+                    {%endif%}
+                    {% if a.note > 3%}
+                    <span style="float: right; color: rgb(250, 212, 0);">★</span>
+                    {%endif%}
+                    {% if a.note > 4%}
+                    <span style="float: right; color: rgb(250, 212, 0);">★</span>
+                    {%endif%}
+                    
+                </h4>
+                <h6 class="card-subtitle mb-2">{{a.date_avis}}</h6>
+                <p class="card-text">{{a.commentaire}}</p>
+                <div class="mt-auto">
+                    <a class="card-link btn btn-outline-danger" href="{% url 'supprimer_avis' a.id%}">Supprimer mon avis</a>
+                </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+    </div>
+      
+      
+      
+
+
     <br><br>
     {% if user.is_authenticated %}
 
@@ -36,4 +85,8 @@
         {%endfor%}
     {%endif%}
 </center>
+
+  
+  
 {% endblock %}
+

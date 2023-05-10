@@ -324,6 +324,13 @@ def avis_restaurant(request, restaurant_id):
         form = AvisForm()
     return render(request, 'app1/avis_restaurant.html', {'restaurant': restaurant, 'avis': avis, 'avis_form':form})
 
+def supprimer_avis(request, pk):
+    avis = Avis.objects.filter(id=pk)
+
+    idresto = avis.first().restaurant.id
+    avis.delete()
+        
+    return redirect('avis_restaurant', restaurant_id = idresto)
 
 # def ajouter_avis(request, restaurant_id):
 #     restaurant = Restaurant.objects.get(id=restaurant_id)
@@ -392,18 +399,16 @@ def ajout_produit(request, restoid):
 
 def supprimer_produit(request, pk):
     produit = Product.objects.filter(id=pk)
-    if produit.exists():
+    
         # On récupère l'id du restaurant auquel appartient le produit
-        restoid = produit.first().restaurant.id
+    restoid = produit.first().restaurant.id
         
         # On supprime l'objet Product de la base de données
-        produit.delete()
+    produit.delete()
         
         # On redirige l'utilisateur vers la vue espace_restaurant pour le restaurant
-        return redirect('espace_restaurant', pk=restoid)
-    else:
-        # Si l'objet n'existe pas, on affiche une erreur 404
-        raise Http404("Le produit n'existe pas")
+    return redirect('espace_restaurant', pk=restoid)
+
     
     return render(request, 'app1/espace_restaurant.html', context={"resto": resto})
 
