@@ -45,9 +45,11 @@
                 </h4>
                 <h6 class="card-subtitle mb-2">{{a.date_avis}}</h6>
                 <p class="card-text">{{a.commentaire}}</p>
+                {%if user == a.auteur %}
                 <div class="mt-auto">
                     <a class="card-link btn btn-outline-danger" href="{% url 'supprimer_avis' a.id%}">Supprimer mon avis</a>
                 </div>
+                {%endif%}
             </div>
           </div>
           {% endfor %}

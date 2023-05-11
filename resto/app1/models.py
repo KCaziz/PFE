@@ -71,11 +71,10 @@ class Cart(models.Model):
 
     def delete(self, *args, **kwargs):
         for order in self.orders.all():
-            order.save()
+            order.delete()
 
         self.orders.clear()
         super().delete(*args, **kwargs)
-
 
 class Avis(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='avis')

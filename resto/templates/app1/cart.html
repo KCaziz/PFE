@@ -1,20 +1,29 @@
 {% extends 'base.html' %}
 {% block content %}
-<center>
-{% if orders %}
-{% for order in orders %}
-    <h2>{{ order.product.name }}</h2>
-    {% if order.product.thumbnail%}
-    <img src="{{ order.product.thumbnail.url }}" alt="{{ order.product.name }} Thumbnail">
-    {% endif %}
-    <p>{{ order.quantity }} dans le panier</p>
-{% endfor %}
 
-<a href="{% url 'valider' %}">Commander</a>
-<br>
-<a href="{% url 'delete_cart' %}">Supprimer le panier</a>
-</center>
+{% if orders %}
+
+<ul class="m-5">
+    {% for order in orders %}
+    <li style="display:block;clear:both;">
+        {% if order.product.thumbnail%}
+                <img src="{{ order.product.thumbnail.url }}" alt="" height="130" class="float-left mr-3">
+        {%else%}
+        {%endif%}
+        <h1 class="mt-4">{{ order.product.name }} <span class="text-danger" style="font-size: 60%; font-weight:bold;">(x{{ order.quantity }})</span> </h1>
+
+    </li>
+    {% endfor %}
+
+</ul>
+
+<div class="fixed-bottom bg-white p-3 d-flex justify-content-center">
+    <a href="{% url 'valider' %}" class="btn btn-primary d-inline-block mr-2">Commander</a>
+    <a href="{% url 'delete_cart' %}" class="btn btn-outline-danger d-inline-block">Vider le panier</a>
+</div>
+  
 {% else %}
+
 <center>
 <h2>Votre panier est vide</h2>
 </center>
