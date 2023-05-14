@@ -1,0 +1,44 @@
+{% extends 'base.html' %} <!--sera enlevé-->
+{% block content %}
+<center class="mt-5"><H2>Reserver dans le restaurant </H2></center>
+<br>
+
+<form action="{% url 'reserver' resto.id %}" method="post" class="col-md-6 m-auto">
+    {% csrf_token %}
+    <div class="form-group mb-1">
+        <label for="nbr_tables">Nombre de tables :</label>
+        <input type="number" class="form-control" id="nbr_tables" name="nbr_tables">
+      </div>
+      <div class="form-group mb-1">
+          <label for="nbr_personnes">Nombre de personne :</label>
+          <input type="number" class="form-control" id="nbr_personnes" name="nbr_personnes">
+        </div>
+      <div class="form-group mb-1">
+          <label for="date">Reserver pour :</label>
+          <input type="date" class="form-control" id="date" name="date">
+      </div>
+      <div class="form-group mb-1">
+          <label for="heure">Heure :</label>
+          <input type="time" class="form-control" id="heure" name="heure">
+      </div>
+      <div class="form-group mb-3">
+        <label for="commentaire">Commentaire :</label>
+        <input type="text" class="form-control" id="commentaire" name="commentaire" placeholder="une remarque sur la reservation">
+      </div>
+
+    <button type="submit" onclick="showAlert()" class="btn btn-primary">Confirmer</button>
+</form>
+
+<script>
+    function showAlert() {
+        var reservationRemark = "Votre demande de reservation est en cours de traitement, veuillez attendre un message de confirmation par le restaurant dans votre boite mail";
+
+        alert(reservationRemark);
+    }
+
+</script>
+
+
+
+{% endblock %}
+

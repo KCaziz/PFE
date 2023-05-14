@@ -26,6 +26,8 @@ urlpatterns = [
     path('restaurateur/espace_restaurant/<str:username>/resto_commandes/traitement', views.process_order_user, name='process_order_user'),
     path('restaurateur/espace_restaurant/<int:pk>/qr_code', views.qr_code, name='qr_code'),
     path('avis_restaurant/avis/<int:pk>', views.supprimer_avis, name='supprimer_avis'),
+    path('reserver/<int:resto_id>', views.reserver, name='reserver'),
+    path('reservations/', views.reservations, name='reservations'),
 
     ]
  

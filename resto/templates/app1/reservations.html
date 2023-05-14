@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<center>
+    <h2>
+        voici votre historique des reservations {{user.name}}
+    </h2>
+    <table style="width: 90%; margin: 20px;">
+        <thead>
+          <tr style="border: 1px solid #999;">
+            <th style="padding: 10px;">Restaurant</th>
+            <th style="padding: 10px;">tables</th>
+            <th style="padding: 10px;">personnes</th>
+            <th style="padding: 10px;">Date</th>
+            <th style="padding: 10px;">Heure</th>
+            <th style="padding: 10px;">statut</th>
+            <th style="padding: 10px;">Remarque</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for reservation in reservations %}
+          <tr style="border: 1px solid #999;
+                {% if dateToDay < reservation.date  %}
+                    {% if reservation.answered %}
+                        {% if reservation.agreed %} background-color: #93ed87; {% else %} background-color: #eb7755; {% endif %}
+                    {% else %}
+                        background-color: #e6ea3e ;
+                    {% endif %}
+                {% else %}
+                    background-color:  #919191 ;
+                {% endif %}">            
+            <th style="padding: 10px;">{{reservation.restaurant.resto_name}}</th>
+            <th style="padding: 10px;">{{reservation.nbr_tables}}</th>
+            <th style="padding: 10px;">{{reservation.nbr_personnes}}</th>
+            <th style="padding: 10px;">{{reservation.date}}</th>
+            <th style="padding: 10px;">{{reservation.heure}}</th>
+            <th style="padding: 10px;">
+                {%if reservation.answered %}
+                    {%if reservation.agreed%}
+                        Approuvée
+                    {%else%}
+                        Refusée
+                    {%endif%}
+                {%else%}
+                    En attente
+                {%endif%}
+            </th>
+            <th style="padding: 10px;">{{reservation.commentaire}}</th>
+            <th><!--btn pour l'annulation--></th>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      
+    
+</center>
+{% endblock %}

@@ -9,7 +9,9 @@
         <h5 style="clear: both;">Numéro de téléphone :  {{resto.phone_resto}}</h5>
         <h5>E-mail : {{resto.mail_address}}</h5>
         <h5><a href="{{ resto.map_url }}">Adresse Google Map</a></h5>
+        <a class="btn btn-info text-black" href="{% url 'reserver' resto.id %}"> <img width="20" src="https://img.icons8.com/ios/50/FFFFFF/reservation.png">  Reserver dans <strong>{{resto.resto_name}}</strong></a>
     </div>
+    
 
     <br><br>
     <center><h2>Voici notre carte</h2></center>

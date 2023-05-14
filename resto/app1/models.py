@@ -89,3 +89,17 @@ class Avis(models.Model):
     
     def __str__(self):
         return self.auteur.username
+
+class Reservation(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    nbr_tables = models.IntegerField()
+    nbr_personnes = models.IntegerField()
+    date = models.DateField()
+    answered = models.BooleanField(default=False)
+    agreed = models.BooleanField(default=False)
+    heure = models.TimeField()
+    commentaire = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.restaurant.resto_name}"

@@ -1,4 +1,5 @@
 import base64
+from datetime import date, timezone, datetime
 import json
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404, redirect, render
@@ -16,8 +17,8 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.text import slugify
 from django.contrib.auth import authenticate, login, logout
 
-from .models import Restaurateur, Product, Cart, Order, Restaurant, Avis
-from .forms import ProduitForm, AvisForm
+from .models import Reservation, Restaurateur, Product, Cart, Order, Restaurant, Avis
+from .forms import ProduitForm, AvisForm, ReservationForm
 from .token import generatorToken
 from django.db.models import Count
 
@@ -264,10 +265,12 @@ def commande (request):
 
 def valider(request):
     user = request.user
-    if user.cart : 
-        user.cart.orders.update(ordered = True)
-        user.cart.delete()
+    if user.cart: 
+        user.cart.orders.update(ordered=True)
+        user.cart = None
+        user.save()
     return redirect('home')
+
 ''' par mesure de précaution on a garder l'ancienne version
 def restaurant_orders(request, pk):
     restaurant = Restaurant.objects.get(id=pk)
@@ -410,7 +413,6 @@ def supprimer_produit(request, pk):
     return redirect('espace_restaurant', pk=restoid)
 
     
-    return render(request, 'app1/espace_restaurant.html', context={"resto": resto})
 
 def affichage_menu(request, pk):
         resto = Restaurant.objects.get(id = pk)
@@ -436,3 +438,34 @@ def qr_code(request, pk):
     qr_image_base64 = base64.b64encode(qr_image_data).decode('utf-8')
 
     return render(request, 'app1/qr_code.html', {'qrcode': qr_image_base64})
+
+
+####### Reservation ##########
+
+def reserver(request, resto_id):
+    restaurant = Restaurant.objects.get(id = resto_id)
+
+    if request.method == 'POST':
+        user = request.user
+        
+        nbr_tables = request.POST['nbr_tables']
+        nbr_personnes = request.POST['nbr_personnes']
+        date = request.POST['date']
+        heure = request.POST['heure']
+        commentaire = request.POST['commentaire']
+
+        reservation = Reservation(user = user, restaurant = restaurant, nbr_tables = nbr_tables, nbr_personnes = nbr_personnes, date = date, heure=heure, commentaire = commentaire)
+        reservation.save()
+
+
+        return redirect('menu', pk=resto_id)
+    else :
+        return render(request, "app1/reserver.html", context = {"resto": restaurant})
+
+def reservations(request):
+    user = request.user
+    heuretoday = datetime.now(tz=timezone.utc)
+    datetoday = date.today()
+    reservations = Reservation.objects.filter(user = user)
+    return render(request, 'app1/reservations.html', {'reservations':reservations, 'dateToDay':datetoday, 'heureToDay' : heuretoday})
+
