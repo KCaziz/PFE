@@ -380,10 +380,12 @@ def espace_restaurant(request, pk):
     produits = Product.objects.filter(restaurant_id = resto.id)
     orders = Order.objects.filter(product__restaurant=resto, processed=False)
     num_orders = orders.count()
+    reservations = Reservation.objects.filter(restaurant=resto, answered=False)
+    num_reservations = reservations.count()
 
     form = ProduitForm()
 
-    return render(request, 'app1/espace_restaurant.html', context={"form": form, "resto": resto, "produits": produits, "num_orders":num_orders})
+    return render(request, 'app1/espace_restaurant.html', context={"form": form, "resto": resto, "produits": produits, "num_orders":num_orders, "num_reservations":num_reservations})
 
 def ajout_produit(request, restoid):
     restaurant = Restaurant.objects.get(id=restoid)
@@ -468,4 +470,45 @@ def reservations(request):
     datetoday = date.today()
     reservations = Reservation.objects.filter(user = user)
     return render(request, 'app1/reservations.html', {'reservations':reservations, 'dateToDay':datetoday, 'heureToDay' : heuretoday})
+
+def reservation_restaurant(request, pk):
+    restaurant = Restaurant.objects.get(id=pk)
+    reservations = Reservation.objects.filter(restaurant=restaurant, answered=False)
+    num_reservations = reservations.count()  # Nombre de commandes en attente
+    return render(request, 'app1/reservation_restaurant.html', {'reservations': reservations, 'num_reservations': num_reservations})
+
+def agree_reservation(request, reserv_id):
+
+    
+    reservation = Reservation.objects.get(id=reserv_id)
+    reservation.agreed = True
+    reservation.answered = True
+    reservation.save()
+        # Envoyer un mail au client avec la réponse du restaurant
+    send_mail(
+        'Demande de Reservation au '+ reservation.restaurant.resto_name,
+        'Votre demande réservation pour le restaurant est accepté, Nous avons le plaisir d\'approuver votre Demande de reservation pour le ' + reservation.date.strftime('%d/%m/%Y') + ' à ' + reservation.heure.strftime('%H:%M') ,
+        settings.EMAIL_HOST_USER,
+        [reservation.user.email],
+        fail_silently=False,
+    )
+    return redirect('reservation_restaurant', pk= reservation.restaurant.id)
+
+def disagree_reservation(request, reserv_id):
+
+    reservation = Reservation.objects.get(id=reserv_id)
+    reservation.agreed = False
+    reservation.answered = True
+    reservation.save()
+
+        # Envoyer un mail au client avec la réponse du restaurant
+    send_mail(
+        'Demande de Reservation au '+ reservation.restaurant.resto_name,
+        'Votre demande réservation pour le restaurant est Refusé, Nous avons le regré de refusé votre Demande de reservation pour le ' + reservation.date.strftime('%d/%m/%Y') + ' à ' + reservation.heure.strftime('%H:%M') ,
+        settings.EMAIL_HOST_USER,
+        [reservation.user.email],
+        fail_silently=False,
+    )
+    return redirect('reservation_restaurant', pk= reservation.restaurant.id)
+
 

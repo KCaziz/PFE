@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Demande de reservation en attente : {{num_reservations}} </h1>
+<table style="width: 90%; margin: 20px;">
+    <thead>
+        <tr style="border: 1px solid #999;">
+          <th style="padding: 10px;">Demandeur</th>
+          <th style="padding: 10px;">tables</th>
+          <th style="padding: 10px;">personnes</th>
+          <th style="padding: 10px;">Créneau</th>
+          <th style="padding: 10px;">Remarque</th>
+          <th style="padding: 10px;">Décision</th>
+          <th></th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        {% for reservation in reservations %}
+        <tr style="border: 1px solid #8d8d8d;">            
+          <th style="padding: 10px;">{{reservation.user.last_name}} {{reservation.user.first_name}}</th>
+          <th style="padding: 10px;">{{reservation.nbr_tables}}</th>
+          <th style="padding: 10px;">{{reservation.nbr_personnes}}</th>
+          <th style="padding: 10px;">{{reservation.date}} à {{reservation.heure}}</th>
+          <th style="padding: 10px;">{{reservation.commentaire}}</th>
+          <th>
+            <a href="{% url 'agree_reservation' reservation.id%}"class="btn btn-success">Accepter</a>
+            <a href="{% url 'disagree_reservation' reservation.id%}" class="btn btn-danger">Refuser</a>
+          </th>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+</table>
+
+<!--ON  DOIT AFFICHER LES RESERVATIONS ANSWERED (raisons de traçabilité)-->
+{% endblock %}

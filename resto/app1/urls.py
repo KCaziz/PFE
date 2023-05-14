@@ -28,6 +28,9 @@ urlpatterns = [
     path('avis_restaurant/avis/<int:pk>', views.supprimer_avis, name='supprimer_avis'),
     path('reserver/<int:resto_id>', views.reserver, name='reserver'),
     path('reservations/', views.reservations, name='reservations'),
+    path('restaurateur/espace_restaurant/<int:pk>/resto_reservations', views.reservation_restaurant, name='reservation_restaurant'),
+    path('restaurateur/espace_restaurant/resto_reservations/<int:reserv_id>/agree', views.agree_reservation, name='agree_reservation'),
+    path('restaurateur/espace_restaurant/resto_reservations/<int:reserv_id>/disagree', views.disagree_reservation, name='disagree_reservation'),
 
     ]
  
