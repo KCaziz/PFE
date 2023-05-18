@@ -57,7 +57,19 @@ class Order(models.Model):
     ordered = models.BooleanField(default=False)
     ordered_date = ordered_date = models.DateTimeField(auto_now_add=True, null=True)
     processed = models.BooleanField(default=False)
+    delivery = models.BooleanField(default=False)
 
+    def __str__(self) :
+        return self.user.username
+
+
+class Livraison(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    order = models.ManyToManyField(Order)
+    address = models.CharField(max_length=200)
+    phone = models.CharField(max_length=15)
+    heure = models.TimeField(null=True, blank=True)
+    delivered = models.BooleanField(default=False)
 
     def __str__(self) :
         return self.user.username
@@ -69,12 +81,7 @@ class Cart(models.Model):
     def __str__(self):
         return self.user.username
 
-    def delete(self, *args, **kwargs):
-        for order in self.orders.all():
-            order.delete()
-
-        self.orders.clear()
-        super().delete(*args, **kwargs)
+    
 
 class Avis(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='avis')

@@ -17,8 +17,8 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.text import slugify
 from django.contrib.auth import authenticate, login, logout
 
-from .models import Reservation, Restaurateur, Product, Cart, Order, Restaurant, Avis
-from .forms import ProduitForm, AvisForm, ReservationForm
+from .models import Reservation, Restaurateur, Product, Cart, Order, Restaurant, Avis, Livraison
+from .forms import ProduitForm, AvisForm, ReservationForm, LivraisonForm
 from .token import generatorToken
 from django.db.models import Count
 
@@ -260,16 +260,37 @@ def cart(request):
 def commande (request):
     user = request.user
     orders = Order.objects.filter(user = user)
-    return render(request, 'app1/commandes.html', {'user':user, 'orders':orders})
+    livraisons = Livraison.objects.filter(order__delivery = True)
+    return render(request, 'app1/commandes.html', {'user':user, 'orders':orders, 'livraisons':livraisons})
 
 
 def valider(request):
     user = request.user
     if user.cart: 
         user.cart.orders.update(ordered=True)
-        user.cart = None
+        user.cart.delete()
         user.save()
     return redirect('home')
+
+def livraison(request):
+    user = request.user
+    if request.method == "POST":
+        form = LivraisonForm(request.POST)
+        if form.is_valid():
+            if user.cart: 
+                user.cart.orders.update(ordered=True, delivery=True)
+                livraison = form.save(commit=False)
+                livraison.user = user
+                livraison.save()
+                # il faut que ce soit des commandes car le cart est supprimer
+                livraison.order.set(user.cart.orders.all())
+                user.cart.delete()
+                user.save()
+            return redirect('home')
+    else:
+        form = LivraisonForm()
+    return render(request, 'app1/livraison.html', {"form":form})
+
 
 ''' par mesure de précaution on a garder l'ancienne version
 def restaurant_orders(request, pk):
@@ -283,12 +304,16 @@ def restaurant_orders(request, pk):
     orders = Order.objects.filter(product__restaurant=restaurant, processed=False)
     user_orders = orders.values('user__username').annotate(total_orders = Count('id'))
     num_orders = orders.count()  # Nombre de commandes en attente
-    return render(request, 'app1/restaurant_orders.html', {'orders': orders, 'num_orders': num_orders, 'user_orders': user_orders})
+    livraisons = Livraison.objects.filter(order__delivery = True)
+    return render(request, 'app1/restaurant_orders.html', {'orders': orders, 'num_orders': num_orders, 'user_orders': user_orders, 'livraisons':livraisons})
 
 
 def process_order(request, pk):
     order = Order.objects.get(pk=pk)
     order.processed = True
+    livraison = Livraison.objects.get(order__id = pk)
+    livraison.delivered = True
+    livraison.save()
     order.save()
     return redirect('restaurant_orders', order.product.restaurant.pk)
 
@@ -334,6 +359,7 @@ def supprimer_avis(request, pk):
     avis.delete()
         
     return redirect('avis_restaurant', restaurant_id = idresto)
+
 
 # def ajouter_avis(request, restaurant_id):
 #     restaurant = Restaurant.objects.get(id=restaurant_id)
