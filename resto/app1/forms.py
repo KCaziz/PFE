@@ -1,6 +1,6 @@
 from django.db.models import fields
 from django import forms
-from .models import Product, Avis, Reservation
+from .models import Product, Avis, Reservation, Livraison
 
 
 class ProduitForm(forms.ModelForm):
@@ -36,5 +36,16 @@ class ReservationForm(forms.ModelForm):
             self.fields['heure'].widget.attrs.update({'class': 'form-control'})
             self.fields['commentaire'].widget.attrs.update({'class': 'form-control'})
 
+
+class LivraisonForm(forms.ModelForm):
+    class Meta:
+        model = Livraison
+        fields = ('address', 'phone', 'heure')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['address'].widget.attrs.update({'class': 'form-control'})
+        self.fields['phone'].widget.attrs.update({'class': 'form-control'})
+        self.fields['heure'].widget.attrs.update({'class': 'form-control'})
 
 

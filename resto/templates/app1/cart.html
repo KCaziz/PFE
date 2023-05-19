@@ -21,6 +21,10 @@
     <a href="{% url 'valider' %}" class="btn btn-primary d-inline-block mr-2">Commander</a>
     <a href="{% url 'delete_cart' %}" class="btn btn-outline-danger d-inline-block">Vider le panier</a>
 </div>
+<button type="button" onclick="openModal('{% url 'livraison' %}')" class="btn btn-primary" >Faire une livraison</button>
+
+
+  
   
 {% else %}
 
@@ -28,4 +32,32 @@
 <h2>Votre panier est vide</h2>
 </center>
 {% endif %}
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<script>
+   function openModal(templateURL) {
+  // Créer une div pour la fenêtre modale
+  var modal = document.createElement('div');
+  
+  modal.classList.add('modal-open');
+
+  // Charger le contenu du template dans la fenêtre modale
+  fetch(templateURL)
+    .then(response => response.text())
+    .then(html => {
+      modal.innerHTML = html;
+    })
+    .catch(error => {
+      console.error('Une erreur s\'est produite lors du chargement du template :', error);
+    });
+
+  // Ajouter la fenêtre modale à la page
+  document.body.appendChild(modal);
+}
+
+
+</script>
+
 {% endblock %}
