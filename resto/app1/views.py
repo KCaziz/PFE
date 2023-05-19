@@ -1,6 +1,7 @@
 import base64
 from datetime import date, timezone, datetime
 import json
+from random import random
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import Http404, HttpResponse, JsonResponse
@@ -510,5 +511,4 @@ def disagree_reservation(request, reserv_id):
         fail_silently=False,
     )
     return redirect('reservation_restaurant', pk= reservation.restaurant.id)
-
 
