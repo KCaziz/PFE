@@ -1,9 +1,9 @@
 {% extends 'base.html' %} <!--sera enlevé-->
 {% block content %}
 <div class="left m-3">
-        <h3>Bienvenue à : {{resto.resto_name}}</h3> 
+        <h3>Nom du restaurant : {{resto.resto_name}}</h3> 
         <h5>Type : {{resto.type}}</h5>
-        <h5 style="float: left;margin-right: 5px;">note Moyenne : {{resto.moyenne}}</h5> <span class="d-block ml-2"><a class="d-inline  text-muted "  href="{%url 'avis_restaurant' resto.id %}">Voir les Avis</a></span>
+        <h5 style="float: left;margin-right: 5px;">Note Moyenne : {{resto.moyenne|floatformat:1}}</h5> <span class="d-block ml-2"><a class="d-inline  text-muted "  href="{%url 'avis_restaurant' resto.id %}">Voir les Avis</a></span>
         <h5 style="clear: both;">Numéro de téléphone :  {{resto.phone_resto}}</h5>
         <h5>E-mail : {{resto.mail_address}}</h5>
         <h5><a href="{{ resto.map_url }}">Adresse Google Map</a></h5>
@@ -22,10 +22,12 @@
         <li style="display:block;clear:both;">
             
             {% if produit.thumbnail%}
-                <img src="{{ produit.thumbnail.url }}" alt="" height="150" class="float-left mr-3">
-            {%else%}
+                <div class="float-left mr-3 mt-2" style="width:150px; height:150px; overflow: hidden;">
+                    <img src="{{ produit.thumbnail.url }}" alt="" height="" style="width:100%;object-fit: cover;">
+                </div>
+                {%else%}
             {%endif%}
-            <a href="{% url 'supprimer_produit' produit.id%}" class="btn btn-danger float-right mt-5">Supprimer</a>
+            <a href="{% url 'supprimer_produit' produit.id%}" class="btn btn-danger float-right mt-5"><i class="fa-solid fa-trash mr-2" style="color: #ffffff;"> </i> Supprimer</a>
             <h3>{{produit.name}} : </h3>
             <h5>{{produit.price}} DA</h5>
             <p>{{produit.description}}</p>
@@ -46,7 +48,7 @@
         
         {% csrf_token %}
         {{ form.as_div }}
-        <button type="submit" class="btn btn-primary">Ajouter Consomation</button>
+        <button type="submit" class="btn btn-primary mt-2"><i class="fa-sharp fa-solid fa-circle-plus mr-2" style="color: #ffffff;"> </i>Ajouter Consomation</button>
 
         
         <!--

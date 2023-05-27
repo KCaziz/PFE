@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<center><h2>Se connecter ici</h2></center>
+<center class="mt-4"><h2>Se connecter ici</h2></center>
 
 {% for message in messages %}
-    <strong> {{ message }} </strong> 
+    <center> {{ message }} </center> 
 {% endfor %}
 
 <div class="m-auto w-50">
@@ -17,8 +17,7 @@
     <label for="password">Password</label>
     <input class="form-control" type="password" name="password" id="password" placeholder="Enter Your password" required>
     <br>
-    <button type="submit" class="btn btn-primary">se connecter</button>
+    <button type="submit" class="btn btn-primary">Se connecter</button>  <a href="{%url 'home'%}"class="ml-2">Vous n'avez pas un compte</a>
 </form>
-<a href="{%url 'home'%}"class="btn btn-light">Accueil</a>
 </div>
 {% endblock %}

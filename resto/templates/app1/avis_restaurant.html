@@ -3,22 +3,22 @@
 <center>
     
     <div class="container">
-        <h2 class="mb-4">Avis et critiques sur <strong>{{restaurant.resto_name}}</strong></h2>
+        <h2 class="m-4">Avis et critiques sur <strong>{{resto.resto_name}}</strong></h2>
         <h2 class="mb-4 mt-0">
-            <span style="color: rgb(250, 212, 0);">★</span>
-                    {% if restaurant.moyenne > 1%}
+            <span  style="color: rgb(250, 212, 0);">★</span>
+                    {% if resto.moyenne >= 2%}
                     <span style="color: rgb(250, 212, 0);">★</span>
                     {%endif%}
-                    {% if restaurant.moyenne > 2%}
+                    {% if resto.moyenne >= 3%}
                     <span style="color: rgb(250, 212, 0);">★</span>
                     {%endif%}
-                    {% if restaurant.moyenne > 3%}
+                    {% if resto.moyenne >= 4%}
                     <span style="color: rgb(250, 212, 0);">★</span>
                     {%endif%}
-                    {% if restaurant.moyenne > 4%}
+                    {% if resto.moyenne == 5%}
                     <span style="color: rgb(250, 212, 0);">★</span>
                     {%endif%}
-                    ({{restaurant.moyenne|floatformat:1 }})
+                    ({{resto.moyenne|floatformat:1 }})
         </h2>
         <br>
         <div class="row">
@@ -28,18 +28,18 @@
               
                 <h4 class="card-title">
                     <strong>{{a.auteur.username}}</strong>
-                    <span style="float: right; color: rgb(250, 212, 0);">★</span>
+                    <span class="stars-avis">★</span>
                     {% if a.note > 1%}
-                    <span style="float: right; color: rgb(250, 212, 0);">★</span>
+                    <span class="stars-avis">★</span>
                     {%endif%}
                     {% if a.note > 2%}
-                    <span style="float: right; color: rgb(250, 212, 0);">★</span>
+                    <span class="stars-avis">★</span>
                     {%endif%}
                     {% if a.note > 3%}
-                    <span style="float: right; color: rgb(250, 212, 0);">★</span>
+                    <span class="stars-avis">★</span>
                     {%endif%}
                     {% if a.note > 4%}
-                    <span style="float: right; color: rgb(250, 212, 0);">★</span>
+                    <span class="stars-avis">★</span>
                     {%endif%}
                     
                 </h4>
@@ -66,9 +66,9 @@
     {% for group in user.groups.all %}
 
         {% if group.name == 'Client' %}
-        <p>vous pouver ajouter un avis ici</p>
+        <h3>Ajouter un commentaire</h3>
         
-        <form action="{% url 'avis_restaurant' restaurant.id %}" method="post" class="col-md-6">
+        <form action="{% url 'avis_restaurant' resto.id %}" method="post" class="col-md-6">
             {% csrf_token %}
             <div class="form-group">
                 {{ avis_form.note.label_tag }}

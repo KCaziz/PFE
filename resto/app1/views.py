@@ -1,7 +1,6 @@
 import base64
-from datetime import date, timezone, datetime
+from datetime import date, timedelta, timezone, datetime
 import json
-from random import random
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import Http404, HttpResponse, JsonResponse
@@ -179,7 +178,7 @@ def logIn(request):
         if user is not None:
             login(request, user)
             firstname = user.first_name
-            return render(request, 'app1/index.html', {"firstname":firstname})
+            return render(request, 'app1/index.html',{'firstname':firstname})
         elif my_user.is_active == False:
             messages.error(request, "Confirmez votre address mail avant de vous connecter")
         else :
@@ -243,26 +242,32 @@ def add_to_cart(request, slug):
     
     return redirect('menu', product.restaurant.id)
 
-def delete_cart(request):
-    if cart := request.user.cart:
-        cart.delete()
+def delete_cart(request, pk):
+    cart = Cart.objects.get(id=pk)
+    # Supprime toutes les commandes associées au panier
+    for order in cart.orders.all():
+        order.delete()
+    cart.delete()
     return redirect('cart')
 
 def cart(request):
     user = request.user
     try:
-        cart = Cart.objects.get(user=user)
+        cart = Cart.objects.get(user__id=user.id)
         orders = cart.orders.all()
+        return render(request, 'app1/cart.html', {'orders': orders,'cart':cart})
     except Cart.DoesNotExist:
         orders = []
-    return render(request, 'app1/cart.html', {'orders': orders})
+        return render(request, 'app1/cart.html', {'orders': orders})
 
 
 def commande (request):
+    heuretoday = datetime.now(tz=timezone.utc)
+    heuretoday = heuretoday - timedelta(hours=12)
     user = request.user
-    orders = Order.objects.filter(user = user)
+    orders = Order.objects.filter(user = user).order_by('-ordered_date')
     livraisons = Livraison.objects.filter(order__delivery = True)
-    return render(request, 'app1/commandes.html', {'user':user, 'orders':orders, 'livraisons':livraisons})
+    return render(request, 'app1/commandes.html', {'user':user, 'orders':orders, 'livraisons':livraisons,'heuremoins12':heuretoday,})
 
 
 def valider(request):
@@ -306,15 +311,16 @@ def restaurant_orders(request, pk):
     user_orders = orders.values('user__username').annotate(total_orders = Count('id'))
     num_orders = orders.count()  # Nombre de commandes en attente
     livraisons = Livraison.objects.filter(order__delivery = True)
-    return render(request, 'app1/restaurant_orders.html', {'orders': orders, 'num_orders': num_orders, 'user_orders': user_orders, 'livraisons':livraisons})
+    return render(request, 'app1/restaurant_orders.html', {'orders': orders, 'num_orders': num_orders, 'user_orders': user_orders, 'livraisons':livraisons,'resto':restaurant})
 
 
 def process_order(request, pk):
     order = Order.objects.get(pk=pk)
     order.processed = True
-    livraison = Livraison.objects.get(order__id = pk)
-    livraison.delivered = True
-    livraison.save()
+    if order.delivery == True:
+        livraison = Livraison.objects.get(order__id = pk)
+        livraison.delivered = True
+        livraison.save()
     order.save()
     return redirect('restaurant_orders', order.product.restaurant.pk)
 
@@ -351,12 +357,23 @@ def avis_restaurant(request, restaurant_id):
             return redirect('avis_restaurant', restaurant_id=restaurant_id)
     else:
         form = AvisForm()
-    return render(request, 'app1/avis_restaurant.html', {'restaurant': restaurant, 'avis': avis, 'avis_form':form})
+    return render(request, 'app1/avis_restaurant.html', {'resto': restaurant, 'avis': avis, 'avis_form':form})
 
 def supprimer_avis(request, pk):
-    avis = Avis.objects.filter(id=pk)
+    avis = Avis.objects.get(id=pk)
+    idresto = avis.restaurant.id
+    avis_resto = Avis.objects.filter(restaurant__id = idresto)
+    div = avis_resto.count()
+    print(div)
+    moyenne = avis.restaurant.moyenne
+    sum = moyenne*div - avis.note
+    if div == 1 :
+        moyenne = 2.5
+    else:
+        moyenne = sum / (div-1)
+    avis.restaurant.moyenne = moyenne
+    print(avis.restaurant.moyenne)
 
-    idresto = avis.first().restaurant.id
     avis.delete()
         
     return redirect('avis_restaurant', restaurant_id = idresto)
@@ -391,6 +408,7 @@ def ajout_restaurant(request):
         mail_address = request.POST['mail_address']
         address = request.POST['address']
         map_url = request.POST['map_url']
+        type = request.POST['type']
 
         # Créer une nouvelle instance de Restaurant avec les données saisies
         restaurant = Restaurant(proprietaire = restaurateur, resto_name=resto_name, phone_resto = phone_resto, mail_address = mail_address, address = address, map_url=map_url)
@@ -466,7 +484,7 @@ def qr_code(request, pk):
     qr_image_data = buffer.getvalue()
     qr_image_base64 = base64.b64encode(qr_image_data).decode('utf-8')
 
-    return render(request, 'app1/qr_code.html', {'qrcode': qr_image_base64})
+    return render(request, 'app1/qr_code.html', {'qrcode': qr_image_base64, 'resto' :resto})
 
 
 ####### Reservation ##########
@@ -495,18 +513,19 @@ def reservations(request):
     user = request.user
     heuretoday = datetime.now(tz=timezone.utc)
     datetoday = date.today()
-    reservations = Reservation.objects.filter(user = user)
+    reservations = Reservation.objects.filter(user=user).order_by('-id')
+
     return render(request, 'app1/reservations.html', {'reservations':reservations, 'dateToDay':datetoday, 'heureToDay' : heuretoday})
 
 def reservation_restaurant(request, pk):
     restaurant = Restaurant.objects.get(id=pk)
     reservations = Reservation.objects.filter(restaurant=restaurant, answered=False)
+    reservations_answered = Reservation.objects.filter(restaurant=restaurant, answered=True)
+
     num_reservations = reservations.count()  # Nombre de commandes en attente
-    return render(request, 'app1/reservation_restaurant.html', {'reservations': reservations, 'num_reservations': num_reservations})
+    return render(request, 'app1/reservation_restaurant.html', {'resto':restaurant, 'reservations': reservations, 'num_reservations': num_reservations,'reservations_answered':reservations_answered})
 
 def agree_reservation(request, reserv_id):
-
-    
     reservation = Reservation.objects.get(id=reserv_id)
     reservation.agreed = True
     reservation.answered = True
@@ -537,4 +556,5 @@ def disagree_reservation(request, reserv_id):
         fail_silently=False,
     )
     return redirect('reservation_restaurant', pk= reservation.restaurant.id)
+
 

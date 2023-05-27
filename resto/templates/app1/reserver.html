@@ -3,7 +3,7 @@
 <center class="mt-5"><H2>Reserver dans le restaurant </H2></center>
 <br>
 
-<form action="{% url 'reserver' resto.id %}" method="post" class="col-md-6 m-auto">
+<form action="{% url 'reserver' resto.id %}" method="post" class="col-md-6 m-auto" id="reservation-form">
     {% csrf_token %}
     <div class="form-group mb-1">
         <label for="nbr_tables">Nombre de tables :</label>
@@ -26,15 +26,33 @@
         <input type="text" class="form-control" id="commentaire" name="commentaire" placeholder="une remarque sur la reservation">
       </div>
 
-    <button type="submit" onclick="showAlert()" class="btn btn-primary">Confirmer</button>
+    <button type="submit" class="btn btn-primary">Confirmer</button>
 </form>
 
 <script>
-    function showAlert() {
-        var reservationRemark = "Votre demande de reservation est en cours de traitement, veuillez attendre un message de confirmation par le restaurant dans votre boite mail";
-
-        alert(reservationRemark);
-    }
+  document.addEventListener('DOMContentLoaded', function() {
+    // Code JavaScript ici
+    document.getElementById('reservation-form').addEventListener('submit', function(event) {
+      event.preventDefault(); // Empêche le comportement de soumission par défaut du formulaire
+      Swal.fire({
+        title: 'Reservation demandée',
+        text: 'Votre demande de réservation est en cours de traitement, veuillez attendre un message de confirmation par le restaurant dans votre boîte mail',
+        icon: 'success',
+        confirmButtonText: 'Compris'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Soumettre le formulaire
+          document.getElementById('reservation-form').submit();
+        }
+      });
+    });
+  });
+  Swal.fire(
+    'Remarque',
+    'Votre demande de reservation sera traité ultérieurement par le restaurateur, puis un message de confirmation vous arrivera à votre boite mail envoyé par le restaurant ',
+    'warning'
+  )
+  
 
 </script>
 

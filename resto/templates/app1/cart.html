@@ -7,7 +7,10 @@
     {% for order in orders %}
     <li style="display:block;clear:both;">
         {% if order.product.thumbnail%}
-                <img src="{{ order.product.thumbnail.url }}" alt="" height="130" class="float-left mr-3">
+                <div class="float-left mr-3 mt-2" style="width:140px; height:130px; overflow: hidden;">
+                  <img src="{{ order.product.thumbnail.url }}" alt="" height="" style="width:100%;object-fit: cover;">
+                </div>
+                
         {%else%}
         {%endif%}
         <h1 class="mt-4">{{ order.product.name }} <span class="text-danger" style="font-size: 60%; font-weight:bold;">(x{{ order.quantity }})</span> </h1>
@@ -18,18 +21,23 @@
 </ul>
 
 <div class="fixed-bottom bg-white p-3 d-flex justify-content-center">
-    <a href="{% url 'valider' %}" class="btn btn-primary d-inline-block mr-2">Commander</a>
-    <a href="{% url 'delete_cart' %}" class="btn btn-outline-danger d-inline-block">Vider le panier</a>
-</div>
-<button type="button" onclick="openModal('{% url 'livraison' %}')" class="btn btn-primary" >Faire une livraison</button>
-
-
   
+  <a href="{% url 'valider' %}" class="btn btn-primary d-inline-block mr-2"><i class="fa-solid fa-check-double mr-2"></i>Commander</a>
+  <button type="button" onclick="openModal('{% url 'livraison' %}')" class="btn btn-outline-info" ><i class="fa-solid fa-truck mr-2"></i>Faire livrer</button>
+  <a href="{% url 'delete_cart' cart.id%}" class="btn btn-outline-dark  d-inline-block  ml-2"><i class="fa-solid fa-delete-left mr-2"></i>Vider le panier</a>
+</div>
+<br><br><br>
+<button id="myButtonAnnuler" class="btn ml-2" onclick="annuler()" style="position: absolute;left: 76%;top: 20%;transform: translate(-50%, -50%); display: none;"><i class="fa-solid fa-circle-xmark" style="color: #e7292e;font-size:30px;"></i></button>
+<script>
+  function annuler(){
+    location.reload();
+  }
+</script>
   
 {% else %}
 
 <center>
-<h2>Votre panier est vide</h2>
+<h2 class="m-4">Votre panier est vide</h2>
 </center>
 {% endif %}
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
@@ -40,6 +48,7 @@
    function openModal(templateURL) {
   // Créer une div pour la fenêtre modale
   var modal = document.createElement('div');
+  document.getElementById("myButtonAnnuler").style.display = "block";
   
   modal.classList.add('modal-open');
 

@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Demande de reservation en attente : {{num_reservations}} </h1>
-<table style="width: 90%; margin: 20px;">
+<center><h1 class="m-4">Demandes  en attente : {{num_reservations}} </h1>
+<table style="width: 95%; margin: 20px;">
     <thead>
-        <tr style="border: 1px solid #999;">
+        <tr style="border: 1px solid #999; background-color: rgb(252, 199, 100);">
           <th style="padding: 10px;">Demandeur</th>
           <th style="padding: 10px;">tables</th>
           <th style="padding: 10px;">personnes</th>
           <th style="padding: 10px;">Créneau</th>
           <th style="padding: 10px;">Remarque</th>
           <th style="padding: 10px;">Décision</th>
-          <th></th>
+          
         </tr>
     </thead>
     
@@ -24,14 +24,50 @@
           <th style="padding: 10px;">{{reservation.date}} à {{reservation.heure}}</th>
           <th style="padding: 10px;">{{reservation.commentaire}}</th>
           <th>
-            <a href="{% url 'agree_reservation' reservation.id%}"class="btn btn-success">Accepter</a>
-            <a href="{% url 'disagree_reservation' reservation.id%}" class="btn btn-danger">Refuser</a>
+            <a href="{% url 'agree_reservation' reservation.id%}"class="btn btn-success"><i class="fa-regular fa-thumbs-up mr-2" style="color: #ffffff;"></i>Accepter</a>
+            <a href="{% url 'disagree_reservation' reservation.id%}" class="btn btn-danger"><i class="fa-regular fa-thumbs-down mr-2" style="color: #ffffff;"></i>Refuser</a>
           </th>
         </tr>
         {% endfor %}
     </tbody>
-
 </table>
+</center>
+
+<hr><br>
+<center><h2>Historique des reservations </h2>
+  <table style="width: 95%; margin: 20px;">
+    <thead>
+        <tr style="border: 1px solid #999; background-color: rgb(252, 199, 100);">
+          <th style="padding: 10px;">Demandeur</th>
+          <th style="padding: 10px;">tables</th>
+          <th style="padding: 10px;">personnes</th>
+          <th style="padding: 10px;">Créneau</th>
+          <th style="padding: 10px;">Remarque</th>
+          <th style="padding: 10px;">Décision</th>
+          
+        </tr>
+    </thead>
+    
+    <tbody>
+        {% for reservation in reservations_answered %}
+        <tr style="border: 1px solid #8d8d8d;">            
+          <th style="padding: 10px;">{{reservation.user.last_name}} {{reservation.user.first_name}}</th>
+          <th style="padding: 10px;">{{reservation.nbr_tables}}</th>
+          <th style="padding: 10px;">{{reservation.nbr_personnes}}</th>
+          <th style="padding: 10px;">{{reservation.date}} à {{reservation.heure}}</th>
+          <th style="padding: 10px;">{{reservation.commentaire}}</th>
+          <th>
+            {%if reservation.agreed == True%}
+            <span style="color: rgb(0, 151, 0);"><i class="fa-regular fa-thumbs-up mr-2" style="color: #1caa00;"></i>acceptée</span>
+            {%else%}
+            <span style="color: rgb(179, 0, 0);"><i class="fa-regular fa-thumbs-down mr-2" style="color: #e70000;"></i>rejetée</span>
+            {%endif%}
+          </th>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</center>
 
 <!--ON  DOIT AFFICHER LES RESERVATIONS ANSWERED (raisons de traçabilité)-->
 {% endblock %}

@@ -2,8 +2,8 @@
 {% block content %}
 
 <center>
-    <h2>
-        voici votre historique des reservations {{user.name}}
+    <h2 class="m-4">
+        Historique des reservations
     </h2>
     <table style="width: 90%; margin: 20px;">
         <thead>
@@ -28,7 +28,7 @@
                         background-color: #e6ea3e ;
                     {% endif %}
                 {% else %}
-                    background-color:  #919191 ;
+                    background-color:  #A9A9A9 ;
                 {% endif %}">            
             <th style="padding: 10px;">{{reservation.restaurant.resto_name}}</th>
             <th style="padding: 10px;">{{reservation.nbr_tables}}</th>
@@ -38,12 +38,12 @@
             <th style="padding: 10px;">
                 {%if reservation.answered %}
                     {%if reservation.agreed%}
-                        Approuvée
+                    <i class="fa-regular fa-thumbs-up mr-2" style="color: #000000;"></i>Approuvée
                     {%else%}
-                        Refusée
+                    <i class="fa-regular fa-thumbs-down mr-2" style="color: #000000;"></i>Refusée
                     {%endif%}
                 {%else%}
-                    En attente
+                <i class="fa-solid fa-clock-rotate-left mr-2" style="color: #000000;"></i>En attente
                 {%endif%}
             </th>
             <th style="padding: 10px;">{{reservation.commentaire}}</th>

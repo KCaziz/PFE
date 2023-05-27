@@ -1,30 +1,36 @@
 {% extends 'base.html' %}
 {% block content %}
-	<div class="container mt-5">
-		<h1>Bienvenue sur mon site de commande de restaurant</h1>
-		<p>Vous pouvez commander, réserver et gérer vos commandes ou réservations en toute simplicité.</p>
-	</div>
-	<div>
+{%load static%}
+	
+	
 		<center>
 		{% if user.is_authenticated %}
 
     {% for group in user.groups.all %}
 
         {% if group.name == 'Client' %}
-           
+        <!--SECTION CLIENT-->
+
+		<!--FIN SECTION CLIENT-->
         {% endif %}
 
         {% if group.name == 'Restaurateur' %}
+		<!--SECTION RESTAURATEUR-->
 		<div>
 			<br>
 			{% if restos %}
 			<!-- le restaurateur a déjà inséré des restaurants -->
-			<h3>Choix du restaurant</h3>
-			<div class="restaurant-links">
+			<h1 class="m-3">Choix du restaurant</h1>
+			<div id="containerResto">
 				{% for resto in restos %}
-					<a href="{% url 'espace_restaurant' resto.id %}" class="restaurant-link">{{ resto.resto_name }}</a>
+					<a href="{% url 'espace_restaurant' resto.id %}" class="d-block w-25 card-body">
+						<h3 class="card-title ">{{ resto.resto_name }}</h3>
+						<h6><i class="fa-sharp fa-solid fa-location-dot" style="color: #000000;"></i> {{resto.address}}</h6>
+						<p class="card-text">de type {{resto.type}}, la moyenne que les utilisateurs ont mis sur ce restaurant est {{resto.moyenne|floatformat:1}} </p>
+					</a>
 				{% endfor %}
 			</div>
+			
 			
 			
 			{%else%}
@@ -32,15 +38,145 @@
 			<h3>Veillez ajouter un restaurant</h3>
 			{%endif%}
 
-			<a class="btn btn-primary" href="{% url 'ajout_restaurant' %}" style="clear:both;">Ajouter Restaurant</a>
+			<a class="btn btn-primary m-4" href="{% url 'ajout_restaurant' %}" style="clear:both;"><i class="fa-sharp fa-solid fa-circle-plus" style="color: #ffffff;"></i>  Ajouter Restaurant</a>
 		</div>
         {% endif %}
 
-    {% endfor %}
+    	{% endfor %}
+
+	<!--FIN SECTION RESTAURATEUR-->
+	{%else%}
+	<!--SECTION invité-->
+	<div class="jumbotroninvite mb-5">
+		<div class="containerforinvite">  
+		  <div class="maininvite">
+			<h1>We simplify it.</h1>
+			<a href="#" class="btn-maininvite" id="getStarted">Get Started</a>
+		  </div>
+		</div>
+	</div>
+	
+	<div id="choixinvite" class="container mb-4 pt-4">
+		<div class="row">
+			<div class="col-md-6 mt-4">
+				{% load static %}
+				<img src="{% static 'images/vecteur-client.jpg' %}" alt="" width="250">
+				<h3>Vous êtes Client</h3>
+				<p>Vous voulez découvrir les différents plats et restaurants et choisir ceux qui vous intéressent ?</p>
+				<a href="{% url 'registerClient' %}" class="btn">Register as Client</a>
+			</div>
+			<div class="col-md-6 mt-4">
+				{% load static %}
+				<img src="{% static 'images/vecteur-restaurateur.jpg' %}" alt="" width="250">
+				<h3>Vous êtes Restaurateur</h3>
+				<p>Vous souhaitez promouvoir votre restaurant et attirer de nouveaux clients et augmenter votre visibilité ?</p>
+				<a href="{% url 'register_restaurateur' %}" class="btn">Register as Restaurateur</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- Footer -->
+	<footer class="bg-dark text-center text-white pt-4 pb-0 pl-0 pr-0">
+		
+		<!-- Section: Social media -->
+		<section class="mb-4">
+			<!-- Facebook -->
+			<a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+			><i class="fab fa-facebook-f"></i
+			></a>
+	
+			<!-- Twitter -->
+			<a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+			><i class="fab fa-twitter"></i
+			></a>
+	
+			<!-- Google -->
+			<a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+			><i class="fab fa-google"></i
+			></a>
+	
+			<!-- Instagram -->
+			<a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+			><i class="fab fa-instagram"></i
+			></a>
+	
+			<!-- Linkedin -->
+			<a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+			><i class="fab fa-linkedin-in"></i
+			></a>
+	
+			<!-- Github -->
+			<a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+			><i class="fab fa-github"></i></a>
+		</section>
+		<!-- Section: Social media -->
+	
+		
+	
+		<!-- Section: Text -->
+		<section class="mb-4">
+			<p style="margin: auto; width: 70%;">
+				Innovia crée des applications spécifiques et personnalisées dont les fonctionnalités
+				correspondent précisément aux processus et aux métiers de la filière en demande (actions, 
+				accès, reporting, interfaces…)
+			</p>
+		</section>
+		<!-- Section: Text -->
+		
+		<!-- Copyright -->
+		<div class="text-center p-3 mb-0 w-100" style="background-color: rgba(0, 0, 0, 0.2);">
+		© 2023 Copyright :
+		<a class="text-white" href="https://innovia-dz.com/"> innovia-dz.com</a>
+		</div>
+		<!-- Copyright -->
+	</footer>
+	<!-- Footer -->
 
     {% endif %}
+	<!--Fin SECTION invité-->
 </center>
-	</div>
+	<script>
+		
+
+		function smoothScroll(target, duration) {
+		const startPosition = window.pageYOffset;
+		const targetPosition = document.querySelector(target).offsetTop - 100;
+		const distance = targetPosition - startPosition;
+		const startTime = performance.now();
+
+		function scrollAnimation(currentTime) {
+			const elapsedTime = currentTime - startTime;
+			const scroll = ease(elapsedTime, startPosition, distance, duration);
+			window.scrollTo(0, scroll);
+			if (elapsedTime < duration) {
+			requestAnimationFrame(scrollAnimation);
+			}
+		}
+
+		// Easing function
+		function ease(t, b, c, d) {
+			// t = current time
+			// b = start value
+			// c = change in value
+			// d = duration
+			t /= d / 2;
+			if (t < 1) return (c / 2) * t * t + b;
+			t--;
+			return (-c / 2) * (t * (t - 2) - 1) + b;
+		}
+
+		requestAnimationFrame(scrollAnimation);
+		}
+
+		// Usage example
+		const button = document.getElementById('getStarted');
+
+		button.addEventListener('click', function() {
+			event.preventDefault(); // Empêche la navigation par défaut (pour éviter que "#" ne recharge la page)
+			smoothScroll('#choixinvite', 2000); // Smooth scroll to the element with id 'targetElement' in 1000 milliseconds
+		});
+
+	</script>
 
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>

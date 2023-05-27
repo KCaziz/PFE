@@ -55,7 +55,7 @@ class Order(models.Model):
     product = models.ForeignKey('Product', on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
     ordered = models.BooleanField(default=False)
-    ordered_date = ordered_date = models.DateTimeField(auto_now_add=True, null=True)
+    ordered_date = models.DateTimeField(auto_now_add=True, null=True)
     processed = models.BooleanField(default=False)
     delivery = models.BooleanField(default=False)
 

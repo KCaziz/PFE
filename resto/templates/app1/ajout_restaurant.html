@@ -2,23 +2,23 @@
 {% block content %}
     <br>
     <center><H1>Ajout d'un Restaurant</H1></center>
-    <form method="post" action="{% url 'ajout_restaurant' %}" class="border p-5 m-5" >
+    <form method="post" action="{% url 'ajout_restaurant' %}" class=" p-5 w-75" style="margin:0 auto;" >
         {% csrf_token %}
         <div class="form-group mb-0">
           <label for="name">Nom :</label>
-          <input type="text" class="form-control" id="name" name="name">
+          <input type="text" class="form-control" id="name" name="name" placeholder="Le nom du restaurant">
         </div>
         <div class="form-group mb-0">
             <label for="type">Type :</label>
-            <input type="text" class="form-control" id="tupe" name="type">
+            <input type="text" class="form-control" id="tupe" name="type" placeholder="Traditionnel, Fastfood, Italien ...">
           </div>
         <div class="form-group mb-0">
             <label for="phone_resto">Téléphone :</label>
-            <input type="tel" class="form-control" id="phone_resto" name="phone_resto">
+            <input type="tel" class="form-control" id="phone_resto" name="phone_resto" placeholder="Téléphone du restaurant">
         </div>
         <div class="form-group mb-0">
             <label for="mail_address">Adresse email :</label>
-            <input type="email" class="form-control" id="mail_address" name="mail_address">
+            <input type="email" class="form-control" id="mail_address" name="mail_address" placeholder="restaurant@exemple.com">
         </div>
         <div class="form-group mb-0">
           <label for="address">Adresse :</label>

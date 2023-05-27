@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<center><h2>S'inscrire en tant que <strong>client</strong></h2></center>
+<center class="mt-4"><h2>S'inscrire en tant que <strong>Client</strong></h2></center>
 
 {% for message in messages %} 
 
- <strong>{{ message }} </strong> 
+<center><p class="text-light">{{ message }}</center>
 
 {% endfor %}
 <br>
@@ -14,28 +14,28 @@
 
 <form method="post" action="/register/client">
     {% csrf_token %}
-    <label for="username">username</label>
-    <input class="form-control" type="text" name="username" id="username" placeholder="Enter Your Username" required>
+    <label for="username">Username</label>
+    <input class="form-control" type="text" name="username" id="username" placeholder="Entrer votre Username" required>
     <br>
-    <label for="firstname">firstname</label>
-    <input class="form-control" type="text" name="firstname" id="firstname" placeholder="Enter Your firstname" required>
+    <label for="firstname">Prénom</label>
+    <input class="form-control" type="text" name="firstname" id="firstname" placeholder="Entrer votre firstname" required>
     <br>
-    <label for="lastname">lastname</label>
-    <input class="form-control" type="text" name="lastname" id="lastname" placeholder="Enter Your lastname" required>
+    <label for="lastname">Nom</label>
+    <input class="form-control" type="text" name="lastname" id="lastname" placeholder="Entrer votre lastname" required>
     <br>
-    <label for="email">email</label>
-    <input class="form-control" type="email" name="email" id="email" placeholder="Enter Your email" required>
+    <label for="email">Email</label>
+    <input class="form-control" type="email" name="email" id="email" placeholder="Entrer votre email" required>
     <br>
-    <label for="password">password</label>
-    <input class="form-control" type="password" name="password" id="password" placeholder="Enter Your password" required>
+    <label for="password">Password</label>
+    <input class="form-control" type="password" name="password" id="password" placeholder="Entrer votre password" required>
     <br>
-    <label for="password1">password Confirmation</label>
-    <input class="form-control" type="password" name="password1" id="password1" placeholder="Enter Your password1" required>
+    <label for="password1">Password confirmation</label>
+    <input class="form-control" type="password" name="password1" id="password1" placeholder="Confirmer votre password" required>
     <br>
 
-    <button class="btn btn-primary" type="submit">s'enregistrer</button>
+    <button class="btn btn-primary" type="submit">s'enregistrer</button>   <a href="{% url 'login' %}" class="ml-3">Vous avez déjà un compte ?</a>
 </form>
-<a href="{%url 'home'%}"class="btn btn-light">Accueil</a>
+
 
 </div>
 {% endblock %}

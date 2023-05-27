@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
 
-  <form id="search-form" class="mx-auto" style="max-width: 600px;">
-    <div class="form-group mb-0">
-      <input type="text" name="term" id="search-term" placeholder="Rechercher un restaurant" class="form-control">
+  <form id="search-form"  style="max-width: 600px; margin: 100px auto;">
+    <div class="form-group mb-0 mt-4">
+      <input type="text" name="term" id="search-term" placeholder="Rechercher un restaurant" class="form-control" autocomplete="off">
     </div>
     <ul id="search-results" class="list-group"></ul>
   </form>
@@ -59,7 +59,7 @@
       
     } else {
       $('#search-results').empty();
-      document.getElementById('H2').innerHTML ="<div style='font-size: 20px; text-align:center;margin-top:10px'>Veuillez entrez le nom du restaurant desirez</div>"
+      document.getElementById('H2').innerHTML ="<div style='font-size: 20px; text-align:center;margin-top:10px'>Veuillez entrez le nom du restaurant desiré</div>"
     }
   });
 });

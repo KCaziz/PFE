@@ -21,11 +21,13 @@
         <li>
         
             {% if plat.thumbnail%}
-                <img src="{{ plat.thumbnail.url }}" alt="" height="150" class="float-left mr-3">
+                <div class="float-left mr-3 mt-2" style="width:150px; height:150px; overflow: hidden;">
+                    <img src="{{ plat.thumbnail.url }}" alt="" height="" style="width:100%;object-fit: cover;">
+                </div>
             {%else%}
             {%endif%}
             {% if user.is_authenticated %}
-                <a href="{% url 'add_to_cart' plat.slug %}" class="btn btn-danger float-right mt-5">Ajouter dans le panier</a>
+                <a href="{% url 'add_to_cart' plat.slug %}" class="btn btn-success float-right mt-5 mr-4"><i class="fa-solid fa-circle-plus mr-2" style="color: #ffffff;"></i>Ajouter dans le panier</a>
             {% endif %}
             <h3>{{plat.name}} : </h3>
             <h5>{{plat.price}} DA</h5>
@@ -43,7 +45,7 @@
         <p><a href="{% url 'add_to_cart' plat.slug %}">ajouter dans le panier</a></p>	
             -->	 
         </li>
-        <br><br><br><br>
+        <br>
         {%endif%}
         <br><br>
         {% endfor %}

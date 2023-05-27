@@ -5,31 +5,25 @@
 {% endfor %}
 
 {% if user.is_authenticated %}
-<h4> Bonjour {{ firstname }} Bienvenue dans notre app</h4>
-<button type="submit"><a href="/logout">se deconnecter</a></button>
-<a href="{%url 'home'%}">Accueil</a>
-<div>
-    {% if user.is_authenticated %}
 
-    {% for group in user.groups.all %}
+<a id="acceuil-button" style="color:transparent;" href="{%url 'home'%}">Accueil</a>
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Successfully connected ',
+        showConfirmButton: false,
+        timer: 2000
+    })
+    var bouton = document.getElementById("acceuil-button");
+    setTimeout(function mafonction() { bouton.click();}, 2000);
+    // Déclenchez le clic sur le bouton
+    
+</script>
 
-        {% if group.name == 'Client' %}
-            <div class="menu">
-                <h1>Client</h1>
-        {% endif %}
-
-        {% if group.name == 'Restaurateur' %}
-            <div class="menu">
-                <h1>Restaurateur</h1>
-            </div>
-        {% endif %}
-
-    {% endfor %}
-
-    {% endif %}
 {% else %}
 <button type="submit"><a href="/register">s'enregistrer</a></button>
 <button type="submit"><a href="/login">se connecter</a></button>
+
 
 {% endif%}
 {% endblock %}

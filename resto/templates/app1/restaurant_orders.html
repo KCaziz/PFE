@@ -1,16 +1,23 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-  <h1>Commandes en attente {{num_orders}} </h1>
+  <center><h1 class="m-4">Commandes en attente : {{num_orders}} </h1>
   {% if user_orders %}
   {% for user_order in user_orders%}
     <details>
-      <summary><table class="table"><td>{{ user_order.user__username }} </td><td>{{user_order.total_orders}} commande(s)</td><td><a class="btn btn-danger" href="{% url 'process_order_user' user_order.user__username %}">Traiter toutes les commandes</a></td></table></summary>
+      <summary>
+        <table class="table ml-4 mr-4">
+          <td>{{ user_order.user__username }} </td>
+          <td>{{user_order.total_orders}} commande(s)</td>
+          <td><a class="btn btn-primary" href="{% url 'process_order_user' user_order.user__username %}"><i class="fa-solid fa-clipboard-check mr-2" style="color: #ffffff;"></i>Traiter toutes les commandes</a></td>
+        </table>
+      </summary>
       <table class="table">
-        <thead class="thead-dark">
+        <thead class="thead"  style="background-color:#ff9d2c;">
           <th>Produit</th>
           <th>Quantité</th>
           <th>Livraison</th>
+          <th>Détails</th>
           <th>Traitement</th>
         </thead>
         <tbody>
@@ -21,12 +28,12 @@
                 <td>{{ order.quantity }}</td>
                 <td >{% if order.delivery %} 
                  A livrer
-                  <span class="details-link" data-order-id="{{ order.id }}">Details</span>
+                  <span class="details-link" data-order-id="{{ order.id }}"><i id="details-icon" class="fa-solid fa-circle-info fa-beat ml-2" style="color: #000000;font-size:1.1em;"></i></span>
 
                   {% else %} 
                   A domicile 
                   {% endif %}</td>
-                  <td colspan="2">
+                  <td>
                     <div id="details-{{ order.id }}" style="display: none;">
                       {% for livraison in livraisons %}
                       {% if order in livraison.order.all %}
@@ -40,7 +47,7 @@
                       
                     </div>
                   </td>
-                <td><a class="btn btn-danger" href="{% url 'process_order' order.id %}">   Traiter   </a></td>
+                <td><a class="btn btn-primary" href="{% url 'process_order' order.id %}"><i class="fa-solid fa-clipboard-check mr-2" style="color: #ffffff;"></i> Traiter   </a></td>
               </tr>
             {% endif %}
           {% endfor %}
@@ -50,7 +57,7 @@
   {% endfor%}
 {% endif %}
 
-  
+  </center>
   
   <!--
   {% if orders %}

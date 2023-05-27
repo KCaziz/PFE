@@ -5,8 +5,22 @@
 <center>
     <!-- Template qr_code.html -->
 
-    <img src="data:image/png;base64,{{ qrcode }}" alt="QR Code">
+    <img class="mt-4" id="qrcode" src="data:image/png;base64,{{ qrcode }}" alt="QR Code">
+    <br>
+    <br>
+    <button role="button" class="btn btn-success" onclick="downloadPhoto()"> <i class="fa-regular fa-circle-down mr-2" style="color: #ffffff;"></i>Télécharger le QR Code</button>
 
+    
+    
 </center>
+<script>
+    function downloadPhoto() {
+        var photoDataUrl = document.getElementById("qrcode").src;
+        var a = document.createElement("a");
+        a.href = photoDataUrl;
+        a.download = "innoResto_Qr_Code.jpg";
+        a.click();
+    }
+</script>
 
 {% endblock %}

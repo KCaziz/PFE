@@ -1,19 +1,21 @@
+{%load static%}
 
-
-<form action="{% url 'livraison' %}" method="post" class="col-md-6 m-auto" id="myForm">
+<form action="{% url 'livraison' %}" method="post" class="col-md-6 m-auto p-4" id="myForm" style="position: absolute !important;left: 50%;top: 50%;transform: translate(-50%, -50%);background-color: #ff8f0fc5; border-radius: 15px; box-shadow: 2px 2px 10px #383838e5;">
     {% csrf_token %}
     <div class="form-group mb-1">
-        <label for="address">address</label>
+        <label for="address" style="font-weight:bold; font-size:1.3em;">Address</label>
         <input type="text" class="form-control" id="address" name="address">
       </div>
       <div class="form-group mb-1">
-          <label for="phone">Télephone</label>
+          <label for="phone" style="font-weight:bold; font-size:1.3em;">Télephone</label>
           <input type="phone_number" class="form-control" id="phone" name="phone">
         </div>
         <div class="form-group mb-1">
-            <label for="heure">Heure</label>
+            <label for="heure" style="font-weight:bold; font-size:1.3em;">Heure</label>
             <input type="time" class="form-control" id="heure" name="heure">
         </div>
-        <button type="submit" class="btn btn-primary">Confirmer</button>
+        <center><button type="submit" class="btn btn-info m-3">Confirmer</button></center>
 </form>
+
+
 
