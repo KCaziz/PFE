@@ -6,9 +6,9 @@
 <center class="mt-4"><h2>S'inscrire en tant que <strong>Restaurateur</strong></h2></center>
 
 
-
- <strong>{{ messages[-1] }} </strong> 
-
+{% if messages %}
+ <strong>{{ messages }} </strong> 
+{% endif %}
 <br>
 
 <div class="m-auto w-50">

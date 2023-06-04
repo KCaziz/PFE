@@ -4,12 +4,14 @@
   <center><h1 class="m-4">Commandes en attente : {{num_orders}} </h1>
   {% if user_orders %}
   {% for user_order in user_orders%}
-    <details>
+    <details class="details-commandes">
       <summary>
-        <table class="table ml-4 mr-4">
-          <td>{{ user_order.user__username }} </td>
-          <td>{{user_order.total_orders}} commande(s)</td>
-          <td><a class="btn btn-primary" href="{% url 'process_order_user' user_order.user__username %}"><i class="fa-solid fa-clipboard-check mr-2" style="color: #ffffff;"></i>Traiter toutes les commandes</a></td>
+        <table class="table ml-4 mr-4 mb-0">
+          <tr>
+            <td width="25%">{{ user_order.user__username }} </td>
+            <td width="25%">{{user_order.total_orders}} commande(s)</td>
+            <td><a class="btn btn-primary" href="{% url 'process_order_user' user_order.user__username %}"><i class="fa-solid fa-clipboard-check mr-2" style="color: #ffffff;"></i>Traiter toutes les commandes</a></td>
+          </tr>
         </table>
       </summary>
       <table class="table">
@@ -31,7 +33,7 @@
                   <span class="details-link" data-order-id="{{ order.id }}"><i id="details-icon" class="fa-solid fa-circle-info fa-beat ml-2" style="color: #000000;font-size:1.1em;"></i></span>
 
                   {% else %} 
-                  A domicile 
+                  Sur place 
                   {% endif %}</td>
                   <td>
                     <div id="details-{{ order.id }}" style="display: none;">
@@ -54,10 +56,62 @@
         </tbody>
       </table>
     </details>
+    
   {% endfor%}
+  <hr class="mt-0">
 {% endif %}
+</center>
+<br><br>
+<center><h3 class="m-4">Commandes traitées </h3>
+    {% if user_orders_done %}
+    {% for user_order_done in user_orders_done%}
+      <details class="details-commandes">
+        <summary  style="width:75% !important;" >
+          <table class="table ml-4 mr-4 mb-0">
+            <tr>
+              <td width="40%">{{ user_order_done.user__username }} </td>
+              <td width="40%">{{user_order_done.total_orders}} commande(s)</td>
+            </tr>
+          </table>
+        </summary>
+        <table class="table"  style="width:70% !important;background-color: #eeeeeeee;">
+          <thead class="thead"  style="background-color:#ff9d2c;">
+            <th>Produit</th>
+            <th>Quantité</th>
+            <th>Livraison</th>
+          </thead>
+          <tbody>
+            {% for order_done in orders_done %}
+              {% if order_done.user.username == user_order_done.user__username %}
+                <tr>
+                  <td>{{ order_done.product.name }}</td>
+                  <td>{{ order_done.quantity }}</td>
+                  <td >{% if order_done.delivery %} 
+                  A livrer
 
-  </center>
+                    {% else %} 
+                    Sur place
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </details>
+      
+    {% endfor%}
+    <hr class="mt-0 w-75">
+  {% endif %}
+
+
+
+
+</center>
+
+<br><br><br>
+
+
   
   <!--
   {% if orders %}

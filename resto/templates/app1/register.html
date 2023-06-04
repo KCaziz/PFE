@@ -3,11 +3,9 @@
 
 <center class="mt-4"><h2>S'inscrire en tant que <strong>Client</strong></h2></center>
 
-{% for message in messages %} 
-
-<center><p class="text-light">{{ message }}</center>
-
-{% endfor %}
+{% if messages %}
+ <strong>{{ messages[-1] }} </strong> 
+{% endif %}
 <br>
 
 <div class="m-auto w-50">

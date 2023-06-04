@@ -3,9 +3,9 @@
 
 <center class="mt-4"><h2>Se connecter ici</h2></center>
 
-{% for message in messages %}
-    <center> {{ message }} </center> 
-{% endfor %}
+{% if message %}
+    <center class="text-danger"><strong> {{ message }} </strong></center> 
+{% endif %}
 
 <div class="m-auto w-50">
 

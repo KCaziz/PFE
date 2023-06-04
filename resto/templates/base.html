@@ -15,13 +15,23 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa&family=Wix+Madefor+Display:wght@500&display=swap" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Carter+One&display=swap" rel="stylesheet">
 	<style>
 
-		details > summary::marker {
+		details.details-commandes > summary::marker {
   			display: none !important;
 		}
-		summary{
-			list-style : none
+		details.details-commandes summary{
+			list-style : none;
+			
+		}
+		.details-commandes summary:hover{
+			background-color: #ffcd82;
+		}
+		.details-commandes[open] summary {
+			background-color: #ffd9a1; 
 		}
 
 		html{
@@ -72,6 +82,14 @@
 		border-radius: 15px;
 	}
 
+	.horizontal-scrollable > .row {
+            overflow-x: auto;
+            white-space: nowrap;
+    }
+	.horizontal-scrollable > .row > .col-xs-4 {
+        display: inline-block;
+        float: none;
+    }
 
 	</style>
 </head>

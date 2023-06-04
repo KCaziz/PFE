@@ -1,6 +1,31 @@
 {%extends 'base.html'%}
 {% block content %} 
 
+    {%if not user.is_authenticated%}
+    <!--alerte demande de connection -->
+    <script>
+        Swal.fire({
+            title: '<strong>Remarque</strong>',
+            icon: 'warning',
+            html:
+              ' Connectez-vous afin de vous bénificier des différentes fonctionnalités du site : <br>'+
+              '<strong>Commander</strong>, <strong>Reserver</strong>, <strong>Donner votre avis</strong>...',
+            showCloseButton: true,
+            showCancelButton: true,
+            focusConfirm: false,
+            confirmButtonText:
+              '<i class="fa-solid fa-right-to-bracket"></i> Se connecter',
+            confirmButtonAriaLabel: 'Thumbs up, great!',
+            cancelButtonText:
+              'Continuer quand même',
+            cancelButtonAriaLabel: 'Thumbs down',
+            preConfirm: () => {
+                // Redirection vers un autre template Django
+                window.location.href = "{% url 'login' %}";
+            }
+        })
+    </script>
+    {%endif%}
 
     <div class="left m-3">
         <h3>Bienvenue à : {{resto.resto_name}}</h3> 
@@ -9,7 +34,9 @@
         <h5 style="clear: both;">Numéro de téléphone :  {{resto.phone_resto}}</h5>
         <h5>E-mail : {{resto.mail_address}}</h5>
         <h5><a href="{{ resto.map_url }}">Adresse Google Map</a></h5>
+        {% if user.is_authenticated %}
         <a class="btn btn-info text-black" href="{% url 'reserver' resto.id %}"> <img width="20" src="https://img.icons8.com/ios/50/FFFFFF/reservation.png">  Reserver dans <strong>{{resto.resto_name}}</strong></a>
+        {% endif %}
     </div>
     
 
@@ -27,7 +54,7 @@
             {%else%}
             {%endif%}
             {% if user.is_authenticated %}
-                <a href="{% url 'add_to_cart' plat.slug %}" class="btn btn-success float-right mt-5 mr-4"><i class="fa-solid fa-circle-plus mr-2" style="color: #ffffff;"></i>Ajouter dans le panier</a>
+                <a id="addToCart" href="{% url 'add_to_cart' plat.slug %}" class="btn btn-success float-right mt-5 mr-4"><i class="fa-solid fa-circle-plus mr-2" style="color: #ffffff;"></i>Ajouter dans le panier</a>
             {% endif %}
             <h3>{{plat.name}} : </h3>
             <h5>{{plat.price}} DA</h5>
@@ -50,5 +77,20 @@
         <br><br>
         {% endfor %}
     </ul>
-    
+    <script>
+        function ajoutAvecSuccess(){
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Plat ajouté à votre panier',
+                showConfirmButton: false,
+                timer: 1500
+            })
+            setTimeout(function MaFonction() { bouton.click();}, 1500);
+        }
+        
+        //var bouton = document.getElementById("addToCart");
+        // Déclenchez le clic sur le bouton
+        
+    </script>
 {% endblock %}

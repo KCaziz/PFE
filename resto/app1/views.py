@@ -21,7 +21,7 @@ from .models import Reservation, Restaurateur, Product, Cart, Order, Restaurant,
 from .forms import ProduitForm, AvisForm, ReservationForm, LivraisonForm
 from .token import generatorToken
 from django.db.models import Count
-
+from django.db.models import Q
 
 # Create your views here.
 
@@ -31,8 +31,14 @@ def home(request):
         restos =  Restaurant.objects.filter(proprietaire__user = user)
         return render(request, 'app1/acceuil.html', context={"restos": restos})
     if user.groups.filter(name='Client').exists():
-        products = Product.objects.all()
-        return render(request, 'app1/acceuil.html', context={"products": products})
+        commande = Order.objects.filter(user=user).last()
+        heurenow = date.today()
+        reservation = Reservation.objects.filter(
+            Q(date__gte=heurenow) & Q(agreed=True)& Q(user=user)
+        )        
+        restaurant =  Restaurant.objects.all()
+
+        return render(request, 'app1/acceuil.html', context={"commande": commande, 'reservations': reservation, 'restaurants': restaurant})
     return render(request, 'app1/acceuil.html' )
 
 def register(request):
@@ -170,21 +176,25 @@ def registerRestaurateur(request):
     return render(request, 'app1/register_restaurateur.html')
 
 def logIn(request):
-    if request.method == "POST" :
+    message = ""
+    if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
-        user = authenticate(username=username, password=password)
-        my_user = User.objects.get(username=username)
-        if user is not None:
-            login(request, user)
-            firstname = user.first_name
-            return render(request, 'app1/index.html',{'firstname':firstname})
-        elif my_user.is_active == False:
-            messages.error(request, "Confirmez votre address mail avant de vous connecter")
-        else :
-            messages.error(request, 'Mauvaise authentification')
-            return redirect('login')
-    return render(request, 'app1/login.html')
+        try:
+            user = User.objects.get(username=username)
+            if user.check_password(password):
+                if user.is_active:
+                    login(request, user)
+                    firstname = user.first_name
+                    return render(request, 'app1/index.html', {'firstname': firstname})
+                else:
+                    message = "Confirmez votre adresse mail avant de vous connecter"
+            else:
+                message = "Username ou password incorrect !"
+        except User.DoesNotExist:
+            message = "Username ou password incorrect !"
+
+    return render(request, 'app1/login.html', {'message': message})
 
 
 def logOut(request):
@@ -307,11 +317,19 @@ def restaurant_orders(request, pk):
 '''
 def restaurant_orders(request, pk):
     restaurant = Restaurant.objects.get(id=pk)
+
+    #les commandes non traités
     orders = Order.objects.filter(product__restaurant=restaurant, processed=False)
     user_orders = orders.values('user__username').annotate(total_orders = Count('id'))
     num_orders = orders.count()  # Nombre de commandes en attente
+
+    #les commandes déjà traité
+    orders_done = Order.objects.filter(product__restaurant=restaurant, processed=True)
+    user_orders_done = orders_done.values('user__username').annotate(total_orders = Count('id'))
+
+
     livraisons = Livraison.objects.filter(order__delivery = True)
-    return render(request, 'app1/restaurant_orders.html', {'orders': orders, 'num_orders': num_orders, 'user_orders': user_orders, 'livraisons':livraisons,'resto':restaurant})
+    return render(request, 'app1/restaurant_orders.html', {'orders': orders, 'num_orders': num_orders, 'user_orders': user_orders, 'livraisons':livraisons,'resto':restaurant, 'user_orders_done':user_orders_done, 'orders_done':orders_done})
 
 
 def process_order(request, pk):
@@ -411,7 +429,7 @@ def ajout_restaurant(request):
         type = request.POST['type']
 
         # Créer une nouvelle instance de Restaurant avec les données saisies
-        restaurant = Restaurant(proprietaire = restaurateur, resto_name=resto_name, phone_resto = phone_resto, mail_address = mail_address, address = address, map_url=map_url)
+        restaurant = Restaurant(proprietaire = restaurateur, resto_name=resto_name, phone_resto = phone_resto, mail_address = mail_address, address = address, map_url=map_url, type=type)
         restaurant.save()
 
         # Rediriger l'utilisateur vers la page de détails du restaurant

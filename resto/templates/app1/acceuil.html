@@ -3,19 +3,87 @@
 {%load static%}
 	
 	
-		<center>
-		{% if user.is_authenticated %}
+{% if user.is_authenticated %}
 
-    {% for group in user.groups.all %}
+{% for group in user.groups.all %}
 
         {% if group.name == 'Client' %}
-        <!--SECTION CLIENT-->
+        <!-- SECTION CLIENT-->
+		<center><h3 class="m-4" id="bienvunuefirst-name" style="font-family: 'Carter One', cursive;">Bienvenue {{user.first_name}}</h3></center>
+		<br>
+		<div class="container">
+		<div class="row">
+			<!--la derniere commande-->
+			<div class="col-lg-5 mb-4">
+				<h4 class="ml-3"  style="font-family: 'Aref Ruqaa', serif;font-weight: bold; text-align: center;">Votre dernière commande</h4>
+				
+				{% if commande.product.thumbnail%}
+					<div class="float-left mr-3 mt-2" style="width:140px; height:130px; overflow: hidden;">
+						<img src="{{ commande.product.thumbnail.url }}" alt="" height="" style="width:100%;object-fit: cover; box-shadow: 0px 2px 8px #4b4949;border-radius: 10px;">
+					</div>	
+				{%else%}
+				{%endif%}
+				
+				<h4 style="margin-top: 40px;"><i class="fa-solid fa-utensils mr-2"></i>{{ commande.product.name }} <span class="text-danger" style=" font-weight:bold;">(x{{ commande.quantity }})</span> </h4>
+				<h4 class=""><i class="fa-solid fa-store mr-2"></i><a href="{% url 'menu' commande.product.restaurant.id %}">{{ commande.product.restaurant.resto_name }}</a></h4>
+				<span style="color: #888888; font-size: smaller;">{{commande.ordered_date}}</span>
 
-		<!--FIN SECTION CLIENT-->
-        {% endif %}
+		    </div>
+			
+
+			<!--les reservation-->
+			<div class="col-lg-7">
+				<h4 class="mb-4"  style="font-family: 'Aref Ruqaa', serif;font-weight: bold;text-align: center;">Vos prochaines reservations</h4>
+				<table id="table-reservation-acceil">
+					<thead>
+						<th>Restaurant</th>
+						<th>Date et heure</th>
+						<th>Remarque</th>
+					</thead>
+					<tbody>
+						{%if reservations%}
+						{% for reservation in reservations%}
+						<tr>
+							<td>{{reservation.restaurant.resto_name}}</td>
+							<td>{{reservation.date}} à {{reservation.heure}}</td>
+							<td>{{reservation.commentaire}}</td>
+						</tr>
+						{%endfor%}
+						{%else%}
+						<tr>
+							<td colspan="3" style="text-align: center;">Aucune reservation a été faite par vous</td>
+						</tr>
+						{%endif%}
+					</tbody>
+				</table>
+				
+			</div>
+		</div>
+	    </div>
+			<!--Les restaurant de recommandation-->
+			<br>
+			<div>
+			<h3 class="mt-4 mb-4" style="font-family: 'Aref Ruqaa', serif;font-weight: bold;margin-left: 7%;">Vous appréciez peut-être ...</h3>
+				<div id="containerRestoClient" style="overflow-x: auto;white-space: nowrap;" class="m-3">
+						{% for resto in restaurants %}
+								<a href="{% url 'menu' resto.id %}" class="d-inline-block card-body m-2" style="width: 25em;white-space: wrap;">
+									<h3 class="card-title ">{{ resto.resto_name }}</h3>
+									<h6><i class="fa-sharp fa-solid fa-location-dot" style="color: #000000;"></i> {{resto.address}}</h6>
+									<div class="card-text">
+										Type : {{resto.type}} <br>
+									 	Moyenne : {{resto.moyenne|floatformat:1}}
+									</div>
+								</a>
+						{% endfor %}
+				</div>
+				<center class="m-2" style="font-size: 1.2em;color: #888888;"> Scroll <i class="fa-solid fa-arrow-right ml-2"></i></center>
+			</div>
+			<!--FIN SECTION CLIENT-->
+			{% endif %}
 
         {% if group.name == 'Restaurateur' %}
 		<!--SECTION RESTAURATEUR-->
+<center>
 		<div>
 			<br>
 			{% if restos %}
@@ -41,7 +109,62 @@
 			<a class="btn btn-primary m-4" href="{% url 'ajout_restaurant' %}" style="clear:both;"><i class="fa-sharp fa-solid fa-circle-plus" style="color: #ffffff;"></i>  Ajouter Restaurant</a>
 		</div>
         {% endif %}
-
+        <!-- Footer -->
+	<footer class="text-center text-white pt-4 pb-0 pl-0 pr-0" style="background-color: rgba(0, 0, 0, 0.712);">
+		
+		<!-- Section: Social media -->
+		<section class="mb-4">
+			<!-- Facebook -->
+			<a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+			><i class="fab fa-facebook-f"></i
+			></a>
+	
+			<!-- Twitter -->
+			<a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+			><i class="fab fa-twitter"></i
+			></a>
+	
+			<!-- Google -->
+			<a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+			><i class="fab fa-google"></i
+			></a>
+	
+			<!-- Instagram -->
+			<a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+			><i class="fab fa-instagram"></i
+			></a>
+	
+			<!-- Linkedin -->
+			<a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+			><i class="fab fa-linkedin-in"></i
+			></a>
+	
+			<!-- Github -->
+			<a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+			><i class="fab fa-github"></i></a>
+		</section>
+		<!-- Section: Social media -->
+	
+		
+	
+		<!-- Section: Text -->
+		<section class="mb-4">
+			<p style="margin: auto; width: 70%;">
+				Innovia crée des applications spécifiques et personnalisées dont les fonctionnalités
+				correspondent précisément aux processus et aux métiers de la filière en demande (actions, 
+				accès, reporting, interfaces…)
+			</p>
+		</section>
+		<!-- Section: Text -->
+		
+		<!-- Copyright -->
+		<div class="text-center p-3 mb-0 w-100" style="background-color: rgba(0, 0, 0, 0.438);">
+		© 2023 Copyright :
+		<a class="text-white" href="https://innovia-dz.com/"> innovia-dz.com</a>
+		</div>
+		<!-- Copyright -->
+	</footer>
+	<!-- Footer -->
     	{% endfor %}
 
 	<!--FIN SECTION RESTAURATEUR-->

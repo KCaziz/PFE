@@ -1,3 +1,9 @@
+@keyframes animtext { 
+    from {
+        width: 0;
+        transition: all 2s ease-in-out;
+    } 
+}
 body{
     font-family: 'Wix Madefor Display', sans-serif;
     background-color: #fcf2e2;
@@ -172,8 +178,32 @@ footer{
 
 #containerResto a:hover{
     transform: scale(1.1,1.1);
-    
+
 }
+
+#containerRestoClient a{
+    text-decoration: none;
+    color: black;
+    text-align: left;
+    background-color: rgb(252, 199, 121);
+    margin: 15px 0px;
+    transition: all 0.5s; 
+}
+#containerRestoClient a{
+    background-color: rgb(255, 204, 127);    
+}
+#containerRestoClient a:hover{
+    background-color: rgb(216, 174, 111);    
+}
+#containerRestoClient a h6{
+    font-style: italic;
+}
+#containerRestoClient a h3{
+    font-family: 'Aref Ruqaa', serif;
+    font-weight: bold;
+    font-size: 2.2em;
+}
+
 
 #details-icon{
     cursor: pointer;
@@ -185,3 +215,35 @@ span.stars-avis{
     color: rgb(250, 212, 0);
     font-size: 1.2em;
 }
+
+h3#bienvunuefirst-name{
+    color: rgb(51, 45, 37); 
+    font-family: "arial";
+    font-size: 3em;
+    margin: 10px 0 0 10px;
+    white-space: nowrap;
+    width: 80%;
+    overflow: hidden;
+    animation: animtext 4s steps(80, end); 
+    transition: all cubic-bezier(0.1, 0.7, 1.0, 0.1);
+}
+
+#table-reservation-acceil{
+    width: 100%;
+}
+
+#table-reservation-acceil thead{
+    
+    background-color: #fdbe6a;
+}
+
+#table-reservation-acceil th, #table-reservation-acceil td{
+    padding: 10px;
+}
+
+#table-reservation-acceil tbody{
+    background-color: #ffe0b8;
+
+}
+
+
